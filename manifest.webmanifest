@@ -1,0 +1,16 @@
+{
+  "name": "Pa que rinda la platica",
+  "short_name": "La platica",
+  "description": "Finanzas por quincena, por tu cuenta o en pareja.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF4F7",
+  "theme_color": "#C92C66",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
