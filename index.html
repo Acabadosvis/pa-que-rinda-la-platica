@@ -315,9 +315,10 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;min-height:100vh}
 [hidden]{display:none!important}
 img{max-width:100%}
+a.btn{text-decoration:none}
 input[type="email"],input[type="password"]{border:1.5px solid var(--line);background:var(--surface-2);border-radius:14px;padding:11px 13px;font-size:16px;font-weight:600;min-height:48px;width:100%;min-width:0}
 
-/* Entrada con correo y elección de espacio */
+/* Pantallas de entrada, invitación y error */
 .gate{min-height:92vh;display:grid;place-items:center;padding-inline:16px;padding-block:24px}
 .gate-card{width:min(430px,100%);background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:26px;display:grid;gap:14px;box-shadow:var(--shadow)}
 .gate-card.center{justify-items:center;text-align:center}
@@ -329,15 +330,20 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
 .msg{border-radius:14px;padding:10px 13px;font-size:14px;font-weight:700;background:var(--surface-2);color:var(--ink);border:1.5px solid var(--line)}
 .msg.err{border-color:var(--expense)}
 .msg.ok{border-color:var(--good)}
-.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:700;font-size:13px}
-.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
-.joinrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+.msg.warn{border-color:var(--saving)}
 .gate-card .link{justify-self:center}
+.joinrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+
+/* Invitación a la pareja y cuenta */
+.invite-card{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--surface);border:2px dashed var(--accent);border-radius:var(--r);padding:16px 18px}
+.invite-card strong{font-family:var(--display);font-weight:600;font-size:18px;display:block}
+.invite-card>div:first-child{flex:1 1 240px;min-width:0}
+.inv-actions{display:flex;gap:8px;flex-wrap:wrap}
 .acct{display:grid;gap:10px;border-top:1px solid var(--line);padding-top:14px}
 .acct b{overflow-wrap:anywhere}
-.invite{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface-2);border-radius:16px;padding:10px 14px}
-.invite span{font-size:13.5px;font-weight:800;color:var(--ink-2)}
-.invite b{font-family:var(--display);font-size:22px;letter-spacing:.12em;margin-right:auto}
+.codebox{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface-2);border-radius:16px;padding:10px 14px}
+.codebox span{font-size:13.5px;font-weight:800;color:var(--ink-2)}
+.codebox b{font-family:var(--display);font-size:19px;letter-spacing:.08em;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -349,6 +355,7 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
   <form class="gate-card" id="f-auth" novalidate>
     <div class="logo" aria-hidden="true">$</div>
     <h1>Pa que rinda la platica</h1>
+    <p class="msg ok" id="au-inv" hidden>Te invitaron a llevar las cuentas juntos. Crea tu cuenta o entra para unirte.</p>
     <p class="hint" id="au-sub">Tus cuentas claras, quincena a quincena.</p>
     <div class="gate-tabs" id="au-tabs" role="tablist" aria-label="Entrar o crear cuenta">
       <button type="button" class="gtab" role="tab" data-au="in" aria-selected="true">Entrar</button>
@@ -362,19 +369,27 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
   </form>
 </section>
 
-<section class="gate" id="scr-hogar" hidden>
+<section class="gate" id="scr-join" hidden>
+  <form class="gate-card" id="f-join" novalidate>
+    <div class="logo" aria-hidden="true">$</div>
+    <h1 id="jn-title">Te invitaron a llevar las cuentas juntos</h1>
+    <p class="hint">Al unirte van a ver y anotar sobre los mismos datos, cada uno con su cuenta y desde su celular.</p>
+    <label class="field"><span>¿Cómo te llamas?</span><input type="text" id="jn-nombre" maxlength="14" autocomplete="off" placeholder="Tu nombre"></label>
+    <label class="field"><span>Tu sueldo fijo por quincena (opcional)</span><div class="moneybox"><b>$</b><input type="text" id="jn-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
+    <p class="msg warn" id="jn-warn" hidden>En tu cuenta ya hay cuentas guardadas. Al unirte se reemplazan por las del espacio compartido.</p>
+    <p class="msg err" id="jn-msg" role="status" hidden></p>
+    <button class="btn primary" type="submit" id="jn-go">Unirme</button>
+    <button class="link" type="button" id="jn-no">Ahora no, seguir por mi cuenta</button>
+  </form>
+</section>
+
+<section class="gate" id="scr-error" hidden>
   <div class="gate-card">
     <div class="logo" aria-hidden="true">$</div>
-    <h1>¿Cómo quieres empezar?</h1>
-    <p class="hint">Tu espacio guarda tus cuentas. Si tu pareja ya usa la app, únete al suyo con el código que aparece en sus Ajustes y verán los mismos datos.</p>
-    <button class="btn primary" type="button" id="hg-crear">Empezar mi propio espacio</button>
-    <div class="or"><span>o</span></div>
-    <form id="f-join" class="joinrow" novalidate>
-      <label class="field"><span>Código de tu pareja</span><input type="text" id="hg-code" maxlength="6" autocapitalize="characters" autocomplete="off" placeholder="Ej.: A1B2C3"></label>
-      <button class="btn" type="submit" id="hg-join">Unirme</button>
-    </form>
-    <p class="msg" id="hg-msg" role="status" hidden></p>
-    <button class="link" type="button" id="hg-out">Cerrar sesión</button>
+    <h1>No se pudo abrir tu espacio</h1>
+    <p class="msg err" id="er-msg" role="status"></p>
+    <button class="btn primary" type="button" id="er-retry">Volver a intentar</button>
+    <button class="link" type="button" id="er-out">Cerrar sesión</button>
   </div>
 </section>
 
@@ -391,6 +406,11 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
   </header>
 
   <div class="notice" id="notice" hidden></div>
+
+  <div class="invite-card" id="invite" hidden>
+    <div><strong id="inv-title">Invita a tu pareja</strong><p class="hint">Envíale el enlace. Al abrirlo crea su cuenta, pone su nombre y su sueldo, y quedan los dos viendo y anotando las mismas cuentas.</p></div>
+    <div class="inv-actions"><a class="btn primary small" id="inv-wa" target="_blank" rel="noopener" href="#">Enviar por WhatsApp</a><button class="btn small" type="button" id="inv-copy">Copiar enlace</button></div>
+  </div>
 
   <form class="onboard" id="onboard" hidden>
     <h2>Hola, armemos tu app</h2>
@@ -563,8 +583,12 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
     </div>
     <div class="acct" id="acct" hidden>
       <p class="hint">Sesión iniciada con <b id="acct-email"></b></p>
-      <div class="invite" data-cfg-par><span>Código para tu pareja</span><b id="acct-code"></b><button type="button" class="btn small" id="acct-copy">Copiar</button></div>
-      <p class="hint" data-cfg-par>Tu pareja crea su cuenta con su correo, elige "Unirme" y escribe este código.</p>
+      <div data-cfg-par class="acct">
+        <p class="hint"><b>Invitación para tu pareja.</b> Envíale el enlace o dile el código. Compártelo solo con tu pareja: quien lo use entra a ver estas cuentas.</p>
+        <div class="codebox"><span>Código</span><b id="acct-code"></b></div>
+        <div class="inv-actions"><a class="btn primary small" id="acct-wa" target="_blank" rel="noopener" href="#">Enviar por WhatsApp</a><button type="button" class="btn small" id="acct-copy">Copiar enlace</button></div>
+      </div>
+      <div class="joinrow"><label class="field"><span>Unirme al espacio de mi pareja con un código</span><input type="text" id="acct-join" maxlength="16" autocapitalize="characters" autocomplete="off" placeholder="XXXX-XXXX-XXXX"></label><button type="button" class="btn small" id="acct-join-go">Usar</button></div>
       <button type="button" class="btn small" id="acct-out">Cerrar sesión</button>
     </div>
   </form>
@@ -756,7 +780,7 @@ function commit(op){
     applyOp(store.base,op);
   },function(e){
     var code=e&&e.code;
-    if(code==='PGRST301'||code===401||/JWT/i.test(String(e&&e.message)))toast('Tu sesión venció. Vuelve a entrar.');
+    if(code==='PGRST301'||/JWT/i.test(String(e&&e.message)))toast('Tu sesión venció. Vuelve a entrar.');
     else toast('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.');
   }).then(function(){
     var i=store.pending.indexOf(op);if(i>=0)store.pending.splice(i,1);
@@ -776,22 +800,55 @@ function startLocal(msg){
 /* ---------- Cuenta con correo y espacio compartido (Supabase) ---------- */
 var sb=null,APPCFG=window.PLATICA_CONFIG||{};
 function showView(v){
-  S.view=v;$('#scr-load').hidden=v!=='loading';$('#scr-auth').hidden=v!=='auth';$('#scr-hogar').hidden=v!=='hogar';$('#app-main').hidden=v!=='app';
+  S.view=v;$('#scr-load').hidden=v!=='loading';$('#scr-auth').hidden=v!=='auth';$('#scr-join').hidden=v!=='join';$('#scr-error').hidden=v!=='error';$('#app-main').hidden=v!=='app';
 }
-function setMsg(sel,text,kind){var el=$(sel);el.hidden=!text;el.textContent=text||'';el.className='msg'+(kind?' '+kind:'')}
+function setMsg(sel,text,kind){var el=$(sel);el.hidden=!text;el.textContent=text||'';if(kind)el.className='msg '+kind}
 function errText(e){
   var m=String(e&&e.message||e||'');
   if(/Invalid login credentials/i.test(m))return 'Correo o contraseña incorrectos.';
   if(/Email not confirmed/i.test(m))return 'Falta confirmar tu correo. Abre el mensaje que te enviamos y toca el enlace.';
   if(/already registered/i.test(m))return 'Ese correo ya tiene cuenta. Entra con tu contraseña.';
+  if(/CODIGO_NO_EXISTE/.test(m))return 'Ese código no existe. Revisa que esté completo.';
+  if(/ESPACIO_LLENO/.test(m))return 'Ese espacio ya tiene dos personas.';
+  if(/mi_espacio|crear_espacio|schema cache|does not exist|Could not find/i.test(m))return 'La base de datos aún no está preparada: falta ejecutar schema.sql en Supabase.';
   if(/rate limit|too many|security purposes/i.test(m))return 'Demasiados intentos seguidos. Espera un minuto y vuelve a probar.';
   if(/at least 6|Password should/i.test(m))return 'La contraseña debe tener al menos 6 caracteres.';
   if(/valid email|invalid format/i.test(m))return 'Revisa que el correo esté bien escrito.';
   if(/Failed to fetch|NetworkError|network/i.test(m))return 'No hay conexión. Revisa tu internet e inténtalo de nuevo.';
-  if(/CODIGO_NO_EXISTE/.test(m))return 'Ese código no existe. Revísalo con tu pareja.';
-  if(/ESPACIO_LLENO/.test(m))return 'Ese espacio ya tiene dos personas.';
   return 'No se pudo completar. Inténtalo de nuevo.';
 }
+function fail(e){$('#er-msg').textContent=errText(e);showView('error')}
+
+/* Invitación: el código viaja en el enlace y se recuerda hasta que la persona entra. */
+function normCode(c){return String(c||'').replace(/[^0-9A-Za-z]/g,'').toUpperCase()}
+function fmtCode(c){return normCode(c).replace(/(.{4})(?=.)/g,'$1-')}
+function hashCode(){var m=/unir=([0-9A-Za-z-]{6,24})/.exec(location.hash||'');return m?normCode(m[1]):''}
+function clearHash(){if(/unir=/.test(location.hash||'')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}}
+function rememberInvite(){var c=hashCode();if(c){try{localStorage.setItem(LS+':invite',c)}catch(e){}}}
+function pendingCode(){var c=hashCode();if(c)return c;try{return normCode(localStorage.getItem(LS+':invite'))}catch(e){return ''}}
+function clearInvite(){clearHash();try{localStorage.removeItem(LS+':invite')}catch(e){}}
+function soy(){return S.own&&S.own.creador===false?'esp':'yo'}
+function inviteLink(){return location.origin+location.pathname+'#unir='+S.codigo}
+function waHref(){
+  var t=(named()?nm(soy())+' te invita':'Te invito')+' a llevar las cuentas juntos en Pa que rinda la platica. Entra aquí: '+inviteLink();
+  return 'https://wa.me/?text='+encodeURIComponent(t);
+}
+function copyLink(){
+  var l=inviteLink();
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(l).then(function(){toast('Enlace copiado')},function(){toast(l)});
+  else toast(l);
+}
+function renderInvite(){
+  var el=$('#invite');if(!el)return;
+  var c=S.cfg||{},show=S.mode==='cloud'&&S.ready&&!!S.codigo&&c.listo&&c.modo==='pareja'&&(S.miembros||1)<2;
+  el.hidden=!show;
+  if(show){
+    var n=c.nombres&&c.nombres.esp&&c.nombres.esp!=='Mi pareja'?c.nombres.esp:'tu pareja';
+    $('#inv-title').textContent='Invita a '+n;$('#inv-wa').href=waHref();
+  }
+}
+
+/* Entrar, crear cuenta y recuperar contraseña */
 function authMode(m){
   S.authMode=m;setMsg('#au-msg','');
   document.querySelectorAll('.gtab').forEach(function(b){b.setAttribute('aria-selected',b.dataset.au===m?'true':'false')});
@@ -802,16 +859,17 @@ function authMode(m){
   $('#au-submit').textContent={'in':'Entrar','up':'Crear mi cuenta','forgot':'Enviarme el enlace','recover':'Guardar contraseña'}[m];
   $('#au-forgot').textContent=m==='in'||m==='up'?'Olvidé mi contraseña':'Volver a entrar';
   $('#au-forgot').hidden=m==='recover';
-  $('#au-sub').textContent={'in':'Tus cuentas claras, quincena a quincena.','up':'Crea tu cuenta con tu correo y una contraseña.','forgot':'Escribe tu correo y te enviamos un enlace para cambiar la contraseña.','recover':'Escribe tu nueva contraseña.'}[m];
+  $('#au-sub').textContent={'in':'Entra con tu correo y tu contraseña.','up':'Crea tu cuenta con tu correo y una contraseña.','forgot':'Escribe tu correo y te enviamos un enlace para cambiar la contraseña.','recover':'Escribe tu nueva contraseña.'}[m];
+  $('#au-inv').hidden=!pendingCode()||m==='forgot'||m==='recover';
 }
 function authSubmit(){
-  var email=$('#au-email').value.trim(),pass=$('#au-pass').value,m=S.authMode,p;
+  var email=$('#au-email').value.trim(),pass=$('#au-pass').value,m=S.authMode,p,back=location.origin+location.pathname;
   setMsg('#au-msg','');
   if(m!=='recover'&&!/^\S+@\S+\.\S+$/.test(email)){setMsg('#au-msg','Escribe tu correo completo.','err');return}
   if(m!=='forgot'&&pass.length<6){setMsg('#au-msg','La contraseña debe tener al menos 6 caracteres.','err');return}
   if(m==='in')p=sb.auth.signInWithPassword({email:email,password:pass});
-  else if(m==='up')p=sb.auth.signUp({email:email,password:pass,options:{emailRedirectTo:location.origin}});
-  else if(m==='forgot')p=sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
+  else if(m==='up')p=sb.auth.signUp({email:email,password:pass,options:{emailRedirectTo:back}});
+  else if(m==='forgot')p=sb.auth.resetPasswordForEmail(email,{redirectTo:back});
   else p=sb.auth.updateUser({password:pass});
   $('#au-submit').disabled=true;
   p.then(function(r){
@@ -819,14 +877,16 @@ function authSubmit(){
     if(m==='up'){
       var u=r.data&&r.data.user;
       if(u&&u.identities&&u.identities.length===0){authMode('in');setMsg('#au-msg','Ese correo ya tiene cuenta. Entra con tu contraseña.','err')}
-      else if(!(r.data&&r.data.session))setMsg('#au-msg','Te enviamos un correo a '+email+'. Ábrelo y toca el enlace para activar tu cuenta.','ok');
+      else if(!(r.data&&r.data.session))setMsg('#au-msg','Te enviamos un correo a '+email+'. Ábrelo y toca el enlace para activar tu cuenta; después entra aquí.','ok');
     }else if(m==='forgot')setMsg('#au-msg','Si ese correo tiene cuenta, ya te llegó un enlace para cambiar la contraseña.','ok');
     else if(m==='recover'){S.recover=false;$('#au-pass').value='';toast('Contraseña cambiada');enter()}
   }).catch(function(e){setMsg('#au-msg',errText(e),'err')}).then(function(){$('#au-submit').disabled=false});
 }
+
+/* Espacio de datos */
 function dropChannel(){if(store.ch){try{sb.removeChannel(store.ch)}catch(e){}store.ch=null}}
 function teardown(){
-  dropChannel();store.hid=null;store.base={cfg:null,qs:{}};store.pending=[];S.ready=false;S.codigo='';S.mode='loading';rebuild();
+  dropChannel();store.hid=null;store.base={cfg:null,qs:{}};store.pending=[];S.ready=false;S.codigo='';S.own=null;S.mode='loading';rebuild();
 }
 function fillBase(rows){
   var qs={},cfg=null;
@@ -837,41 +897,74 @@ function reload(){
   var hid=store.hid;
   return sb.from('docs').select('id,data').eq('hogar_id',hid).then(function(r){if(r.error)throw r.error;if(store.hid===hid)fillBase(r.data)});
 }
-function preselectWho(){
-  var soy=null;try{soy=localStorage.getItem(LS+':soy')}catch(e){}
-  if(soy==='esp'){setRadio('gas-w','esp');setRadio('ing-w','esp')}
+function refreshEspacio(){
+  return sb.rpc('mi_espacio').then(function(r){if(!r.error&&r.data&&r.data.id===store.hid)S.miembros=r.data.miembros||1});
 }
+function preselectWho(){var w=soy();setRadio('gas-w',w);setRadio('ing-w',w)}
 function openHogar(h){
-  store.hid=h.id;S.codigo=h.codigo||'';S.mode='cloud';
+  S.own=h;store.hid=h.id;S.codigo=h.codigo||'';S.miembros=h.miembros||1;S.mode='cloud';store.pending=[];
   return reload().then(function(){
     dropChannel();
     store.ch=sb.channel('docs-'+store.hid).on('postgres_changes',{event:'*',schema:'public',table:'docs',filter:'hogar_id=eq.'+store.hid},function(p){
       var row=p&&p['new'];if(!row||!row.id)return;
-      if(row.id==='config')store.base.cfg=row.data;else if(String(row.id).indexOf('q-')===0)store.base.qs[row.id]=row.data||{ing:{},gas:{}};
+      if(row.id==='config'){store.base.cfg=row.data;refreshEspacio().then(render)}
+      else if(String(row.id).indexOf('q-')===0)store.base.qs[row.id]=row.data||{ing:{},gas:{}};
       rebuild();render();
     }).subscribe();
     S.ready=true;S.cur=qidOf(TODAY);preselectWho();syncForms(true);showView('app');render();
   });
+}
+function createOwn(){
+  return sb.rpc('crear_espacio').then(function(r){if(r.error)throw r.error;return openHogar(r.data)});
+}
+function goOwn(){clearInvite();S.joinCode='';return S.own?openHogar(S.own):createOwn()}
+function startJoin(code){
+  S.joinCode=code;showView('loading');
+  return sb.rpc('ver_invitacion',{p_codigo:code}).then(function(r){
+    if(r.error)throw r.error;
+    if(!r.data){toast('Ese enlace de invitación no es válido.');return goOwn()}
+    var inv=S.inv=r.data;
+    $('#jn-title').textContent=inv.yo?inv.yo+' te invita a llevar las cuentas juntos':'Te invitaron a llevar las cuentas juntos';
+    $('#jn-nombre').value=inv.esp&&inv.esp!=='Mi pareja'?inv.esp:'';$('#jn-sueldo').value='';
+    setMsg('#jn-msg','');$('#jn-warn').hidden=true;
+    if(!S.own){showView('join');return}
+    return sb.from('docs').select('id').eq('hogar_id',S.own.id).then(function(d){
+      $('#jn-warn').hidden=!(d.data&&d.data.length);showView('join');
+    });
+  });
+}
+function doJoin(){
+  var nombre=$('#jn-nombre').value.trim().slice(0,14),sueldo=digits($('#jn-sueldo').value);
+  setMsg('#jn-msg','');
+  if(!nombre){setMsg('#jn-msg','Escribe tu nombre para unirte.');$('#jn-nombre').focus();return}
+  $('#jn-go').disabled=true;
+  sb.rpc('unirse_espacio',{p_codigo:S.joinCode}).then(function(r){
+    if(r.error)throw r.error;
+    clearInvite();S.joinCode='';showView('loading');
+    return openHogar(r.data).then(function(){
+      saveCfg(function(c){c.modo='pareja';c.nombres=c.nombres||{};c.nombres.yo=c.nombres.yo||'';c.nombres.esp=nombre;if(sueldo)c.sueldoEsp=sueldo});
+      toast('Listo, '+nombre+'. Ya comparten las cuentas.');
+    });
+  }).catch(function(e){showView('join');setMsg('#jn-msg',errText(e))}).then(function(){$('#jn-go').disabled=false});
 }
 function enter(){
   if(!S.user)return;
   showView('loading');
   sb.rpc('mi_espacio').then(function(r){
     if(r.error)throw r.error;
-    if(!r.data||!r.data.id){setMsg('#hg-msg','');showView('hogar');return}
-    return openHogar(r.data);
-  }).catch(function(e){
-    var m=String(e&&e.message||'');
-    showView('auth');authMode('in');
-    setMsg('#au-msg',/mi_espacio|schema cache|does not exist/i.test(m)?'La base de datos aún no está preparada: falta ejecutar schema.sql en Supabase.':errText(e),'err');
-  });
+    S.own=r.data&&r.data.id?r.data:null;
+    var code=pendingCode();
+    if(code&&!(S.own&&S.own.codigo===code))return startJoin(code);
+    return goOwn();
+  }).catch(fail);
 }
 function boot(){
   render();
   var ok=APPCFG.supabaseUrl&&APPCFG.supabaseKey&&window.supabase&&window.supabase.createClient;
-  if(!ok){startLocal('Modo de prueba: el registro con correo aún no está conectado. Los datos se guardan solo en este dispositivo.');return}
+  if(!ok){startLocal('Modo de prueba: aún no está conectado el registro con correo. Los datos se guardan solo en este dispositivo y no se pueden compartir.');return}
+  rememberInvite();
   sb=window.supabase.createClient(APPCFG.supabaseUrl,APPCFG.supabaseKey);
-  authMode('in');
+  authMode(pendingCode()?'up':'in');
   sb.auth.onAuthStateChange(function(ev,session){
     setTimeout(function(){
       var u=session&&session.user||null;
@@ -880,7 +973,10 @@ function boot(){
         if(S.recover){S.user=u;return}
         var nuevo=!S.user||S.user.id!==u.id||S.view==='auth';
         S.user=u;if(nuevo)enter();
-      }else{S.user=null;S.recover=false;teardown();showView('auth');if(S.authMode==='recover'||S.authMode==='forgot')authMode('in')}
+      }else{
+        S.user=null;S.recover=false;teardown();showView('auth');
+        if(S.authMode==='recover'||S.authMode==='forgot')authMode('in');else authMode(S.authMode||'in');
+      }
     },0);
   });
 }
@@ -907,7 +1003,7 @@ function curSm(){return summarize(S.qs[S.cur]||{},S.cfg,S.cur,TODAY)}
 /* ---------- Pintado ---------- */
 function render(){
   var sm=curSm();
-  applyNames();renderTop(sm);renderHero(sm);renderFijos(sm);renderGastos(sm);renderIngresos(sm);renderAhorro(sm);
+  applyNames();renderInvite();renderTop(sm);renderHero(sm);renderFijos(sm);renderGastos(sm);renderIngresos(sm);renderAhorro(sm);
   var anyIng=Object.keys(S.qs).some(function(id){return vals(S.qs[id].ing).length>0});
   var c=S.cfg||{};
   $('#onboard').hidden=!(S.ready&&!S.readonly&&!c.listo&&!c.sueldo&&!anyIng);
@@ -1165,8 +1261,9 @@ function openSettings(){
   $(c.metaTipo==='monto'?'#cfg-fijo':'#cfg-pct').checked=true;
   $('#cfg-valor').value=c.metaTipo==='monto'?Number(c.metaValor||0).toLocaleString('es-CO'):String(c.metaValor||0);
   cfgMode();
-  $('#acct').hidden=S.mode!=='cloud'||!S.user;
-  $('#acct-email').textContent=S.user?S.user.email:'';$('#acct-code').textContent=S.codigo||'';
+  var nube=S.mode==='cloud'&&!!S.user;
+  $('#acct').hidden=!nube;
+  if(nube){$('#acct-email').textContent=S.user.email||'';$('#acct-code').textContent=fmtCode(S.codigo);$('#acct-wa').href=waHref();$('#acct-join').value=''}
   var d=$('#dlg');if(d.showModal)d.showModal();else d.setAttribute('open','');
 }
 function closeSettings(){var d=$('#dlg');if(d.close)d.close();else d.removeAttribute('open')}
@@ -1285,29 +1382,28 @@ $('#daychart').addEventListener('focusin',function(e){
 document.querySelectorAll('.gtab').forEach(function(b){b.addEventListener('click',function(){authMode(b.dataset.au)})});
 $('#f-auth').addEventListener('submit',function(e){e.preventDefault();if(sb)authSubmit()});
 $('#au-forgot').addEventListener('click',function(){authMode(S.authMode==='in'||S.authMode==='up'?'forgot':'in')});
-function hogarCall(p,soy,btn){
-  setMsg('#hg-msg','');$(btn).disabled=true;
-  p.then(function(r){
-    if(r.error)throw r.error;
-    try{localStorage.setItem(LS+':soy',soy)}catch(e){}
-    showView('loading');return openHogar(r.data);
-  }).catch(function(e){showView('hogar');setMsg('#hg-msg',errText(e),'err')}).then(function(){$(btn).disabled=false});
-}
-$('#hg-crear').addEventListener('click',function(){hogarCall(sb.rpc('crear_espacio'),'yo','#hg-crear')});
-$('#f-join').addEventListener('submit',function(e){
-  e.preventDefault();var code=$('#hg-code').value.trim().toUpperCase();
-  if(code.length<6){setMsg('#hg-msg','El código tiene 6 letras y números.','err');return}
-  hogarCall(sb.rpc('unirse_espacio',{p_codigo:code}),'esp','#hg-join');
-});
-$('#hg-out').addEventListener('click',function(){sb.auth.signOut()});
+$('#f-join').addEventListener('submit',function(e){e.preventDefault();doJoin()});
+$('#jn-no').addEventListener('click',function(){showView('loading');goOwn().catch(fail)});
+$('#er-retry').addEventListener('click',function(){if(S.user)enter();else location.reload()});
+$('#er-out').addEventListener('click',function(){sb.auth.signOut()});
 $('#acct-out').addEventListener('click',function(){closeSettings();sb.auth.signOut()});
-$('#acct-copy').addEventListener('click',function(){
-  var c=S.codigo||'';
-  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(c).then(function(){toast('Código copiado')},function(){toast('Código: '+c)});
-  else toast('Código: '+c);
+$('#inv-copy').addEventListener('click',copyLink);
+$('#acct-copy').addEventListener('click',copyLink);
+$('#acct-join-go').addEventListener('click',function(){
+  var code=normCode($('#acct-join').value);
+  if(code.length<6){toast('Escribe el código completo.');return}
+  if(code===S.codigo){toast('Ya estás en ese espacio.');return}
+  closeSettings();startJoin(code).catch(fail);
 });
 document.addEventListener('visibilitychange',function(){
-  if(!document.hidden&&S.mode==='cloud'&&store.hid&&!store.pending.length)reload().then(render).catch(function(){});
+  if(!document.hidden&&S.mode==='cloud'&&store.hid&&S.view==='app'&&!store.pending.length)
+    Promise.all([reload(),refreshEspacio()]).then(render).catch(function(){});
+});
+window.addEventListener('hashchange',function(){
+  var code=hashCode();if(!code||!sb)return;
+  rememberInvite();
+  if(S.view==='app'&&code!==S.codigo)startJoin(code).catch(fail);
+  else if(S.view==='auth')authMode(S.authMode||'up');
 });
 
 var h=(location.hash||'').slice(1),saved=null;
