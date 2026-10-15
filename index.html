@@ -278,7 +278,6 @@ dialog form{display:grid;gap:14px}
   .colx{display:contents}
   #card-obls{order:1} #f-ob{order:2} #card-obtpl{order:3}
   #f-gas{order:1} #card-ppto{order:2} #card-list{order:3} #card-chart{order:4}
-  #f-ing{order:1} #card-tipos{order:2} #card-inglist{order:3}
   .stats{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:520px){
@@ -353,7 +352,37 @@ dialog form{display:grid;gap:14px}
 .wsum tr.tot td{font-weight:800;border-top:2px solid var(--line)}
 .wsum tbody tr{cursor:default}
 .wsum tbody tr:hover{background:transparent}
-.wiz-on #hero,.wiz-on .tabs,.wiz-on .panel,.wiz-on #invite,.wiz-on #arma{display:none!important}
+.wiz-on #hero,.wiz-on .tabs,.wiz-on .panel,.wiz-on #invite,.wiz-on #arma,.wiz-on #checkin{display:none!important}
+/* Día de pago */
+.ci{display:grid;gap:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--income) 13%,var(--surface)),var(--surface) 70%);border:1.5px solid color-mix(in srgb,var(--income) 38%,var(--line));border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
+.ci-head{display:flex;gap:12px;align-items:center}
+.ci-head strong{font-family:var(--display);font-weight:600;font-size:19px;display:block;line-height:1.2}
+.ci-head small{color:var(--ink-2);font-weight:700;font-size:13.5px}
+.ci-list{display:grid;gap:8px}
+.ci-q{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:11px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.ci-q p{margin:0;font-weight:800;overflow-wrap:anywhere}
+.ci-q p small{display:block;color:var(--muted);font-weight:600;font-size:13px}
+.ci-b{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.btn.ok{background:var(--income);border-color:var(--income);color:#fff}
+.ia{grid-column:1 / -1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ia .moneybox{flex:1 1 170px;min-height:44px;padding:8px 12px}
+.ia .moneybox input{border:0;background:transparent;padding:0;min-height:0}
+@media (max-width:560px){.ci-q{grid-template-columns:40px minmax(0,1fr)}.ci-b{grid-column:1 / -1;justify-content:flex-start}}
+/* Ingresos por persona */
+.ip+.ip{margin-top:16px;padding-top:14px;border-top:1.5px dashed var(--line)}
+.ip-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+.ip-h strong{font-family:var(--display);font-weight:600;font-size:17px;display:flex;align-items:center;gap:8px}
+.ip-h .num{font-weight:800;color:var(--income);font-variant-numeric:tabular-nums}
+.ip .mov .amt.wait{color:var(--muted)}
+.tg{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:800;margin-left:4px;vertical-align:1px}
+.tg.ok{background:color-mix(in srgb,var(--income) 16%,transparent);color:var(--income)}
+.tg.wait{background:color-mix(in srgb,var(--saving) 16%,transparent);color:var(--saving)}
+.tg.no{background:var(--surface-2);color:var(--muted)}
+.ip-cfg{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px;font-size:13.5px;font-weight:700;color:var(--ink-2)}
+.ip-cfg select{width:auto;min-height:38px;padding:5px 10px;font-size:14px}
+.itot{display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--surface-2);font-weight:800}
+.itot .num{color:var(--income);font-variant-numeric:tabular-nums}
+@media (max-width:560px){.ip .mov{grid-template-columns:40px minmax(0,1fr) auto}.ip .mov .ops{grid-column:2 / -1;justify-content:flex-start;flex-wrap:wrap;gap:6px}}
 .track span.warn{background:var(--saving)}
 .track span.over{background:var(--expense)}
 .track span.ok{background:var(--good)}
@@ -479,9 +508,9 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
     <h1 id="jn-title">Te invitaron a llevar las cuentas juntos</h1>
     <p class="hint">Al unirte van a ver y anotar sobre los mismos datos, cada uno con su cuenta y desde su celular.</p>
     <label class="field"><span>¿Cómo te llamas?</span><input type="text" id="jn-nombre" maxlength="14" autocomplete="off" placeholder="Tu nombre"></label>
-    <label class="field"><span>Tu sueldo normal por quincena</span><div class="moneybox"><b>$</b><input type="text" id="jn-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
-    <label class="field"><span>¿Te entra algo extra en la quincena? (opcional)</span><div class="moneybox"><b>$</b><input type="text" id="jn-extra" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
-    <p class="hint">Comisiones, horas extra, ventas: pon un promedio.</p>
+    <label class="field"><span>Tu sueldo básico por quincena</span><div class="moneybox"><b>$</b><input type="text" id="jn-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
+    <label class="field"><span>¿Recibes algo más aparte del sueldo?</span><select id="jn-tipo"><option value="extra">A veces algo extra</option><option value="comision">Sí, comisiones</option><option value="ambos">Comisiones o extras</option><option value="no">No, solo el sueldo</option></select></label>
+    <p class="hint">Cada día de pago (el 15 y el 30 o 31) la app te pregunta si llegó el sueldo y cuánto hubo de más.</p>
     <p class="msg warn" id="jn-warn" hidden>En tu cuenta ya hay cuentas guardadas. Al unirte se reemplazan por las del espacio compartido.</p>
     <p class="msg err" id="jn-msg" role="status" hidden></p>
     <button class="btn primary" type="submit" id="jn-go">Unirme</button>
@@ -528,6 +557,8 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
     <div><strong>Organicemos la plata</strong><p class="hint">En 4 pasos: lo que gana cada uno, los gastos fijos (juntos o por separado) y cuánto piensan gastar en comida, mascota y más.</p></div>
     <button class="btn primary small" type="button" data-act="wiz">Empezar</button>
   </div>
+
+  <section class="ci" id="checkin" hidden aria-live="polite"></section>
 
   <section class="hero" id="hero" aria-live="polite"></section>
 
@@ -600,38 +631,10 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
 
   <!-- INGRESOS -->
   <section class="panel" id="p-ingresos" role="tabpanel" aria-labelledby="t-ingresos" hidden>
-    <div class="two">
-      <div class="colx">
-        <form class="card" id="f-ing" autocomplete="off">
-          <div class="card-h"><h2 id="ing-title">Anotar otro ingreso</h2></div>
-          <div class="quick" id="quick-sueldo" hidden></div>
-          <fieldset data-par-only><legend>¿De quién es?</legend><div class="seg two-opt">
-            <label class="chip"><input type="radio" name="ing-w" id="ing-w-yo" value="yo" checked><span data-who="yo"></span></label>
-            <label class="chip"><input type="radio" name="ing-w" id="ing-w-esp" value="esp"><span data-who="esp"></span></label>
-          </div></fieldset>
-          <fieldset><legend>Tipo de ingreso</legend><div class="seg" id="ing-tipos"></div></fieldset>
-          <label class="field"><span>¿Cuánto entró?</span><div class="moneybox big"><b>$</b><input type="text" id="ing-monto" inputmode="numeric" placeholder="0" data-money></div></label>
-          <div class="row2">
-            <label class="field"><span>Nota (opcional)</span><input type="text" id="ing-nota" maxlength="60" placeholder="Ej.: comisión de un cierre"></label>
-            <label class="field"><span>Fecha</span><input type="date" id="ing-fecha"></label>
-          </div>
-          <div class="actions">
-            <button class="btn primary" type="submit" id="ing-submit">Guardar ingreso</button>
-            <button class="btn" type="button" id="ing-cancel" hidden>Cancelar</button>
-          </div>
-        </form>
-      </div>
-      <div class="colx">
-        <div class="card" id="card-tipos">
-          <div class="card-h"><h2>Lo que entra esta quincena</h2><span class="aside num" id="ing-total"></span></div>
-          <div id="prev-list"></div>
-          <div id="tipo-list"></div>
-        </div>
-        <div class="card" id="card-inglist">
-          <div class="card-h"><h2>Detalle de ingresos</h2></div>
-          <div id="ing-list"></div>
-        </div>
-      </div>
+    <div class="card" id="card-ing">
+      <div class="card-h"><h2>Ingresos de la quincena</h2><span class="aside num" id="ing-total"></span></div>
+      <p class="hint" id="ing-hint" style="margin-top:-4px;margin-bottom:12px">El sueldo básico se cuenta solo. Cada día de pago (el 15 y el 30 o 31) la app pregunta si llegó y si hubo algo más.</p>
+      <div id="ing-body"></div>
     </div>
   </section>
 
@@ -655,8 +658,8 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
     <button class="btn" type="button" data-act="wiz">Organizar la plata: ingresos, fijos y presupuestos</button>
     <fieldset><legend>¿Cómo usas la app?</legend><div class="seg two-opt"><label class="chip"><input type="radio" name="cfg-modo" id="cfg-modo-solo" value="solo"><span>Por mi cuenta</span></label><label class="chip"><input type="radio" name="cfg-modo" id="cfg-modo-par" value="pareja" checked><span>En pareja</span></label></div></fieldset>
     <div class="grid2"><label class="field"><span>Tu nombre</span><input type="text" id="cfg-n-yo" maxlength="14" autocomplete="off"></label><label class="field" data-cfg-par><span>Nombre de tu pareja</span><input type="text" id="cfg-n-esp" maxlength="14" autocomplete="off"></label></div>
-    <label class="field"><span>Tu sueldo fijo por quincena</span><div class="moneybox"><b>$</b><input type="text" id="cfg-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
-    <label class="field" data-cfg-par><span>Sueldo fijo de tu pareja por quincena</span><div class="moneybox"><b>$</b><input type="text" id="cfg-sueldo-esp" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
+    <label class="field"><span>Sueldo básico de <b data-who="yo"></b> por quincena</span><div class="moneybox"><b>$</b><input type="text" id="cfg-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
+    <label class="field" data-cfg-par><span>Sueldo básico de <b data-who="esp"></b> por quincena</span><div class="moneybox"><b>$</b><input type="text" id="cfg-sueldo-esp" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
     <fieldset><legend>Meta de ahorro por quincena</legend>
       <div class="seg two-opt">
         <label class="chip"><input type="radio" name="cfg-tipo" id="cfg-pct" value="pct" checked><span>% de los ingresos</span></label>
@@ -740,14 +743,13 @@ function summarize(q,cfg,qid,today){
   for(i=0;i<r.days;i++){perDay.push(0);cntDay.push(0)}
   function wOf(x){return x.w==='esp'?'esp':'yo'}
   ings.forEach(function(x){ing+=x.m;byTipo[x.k]=(byTipo[x.k]||0)+x.m;who[wOf(x)].ing+=x.m});
-  /* Sueldos y extras de siempre: se cuentan solos mientras no se anote otro valor en la quincena */
+  /* El sueldo básico se cuenta solo mientras no se confirme cuánto llegó */
   var prev=[];
   if(cfg&&cfg.listo&&(!cfg.desde||qid>=cfg.desde)){
     (cfg.modo==='pareja'?['yo','esp']:['yo']).forEach(function(w){
-      var sv=Number(w==='yo'?cfg.sueldo:cfg.sueldoEsp)||0,xv=Number(w==='yo'?cfg.extraYo:cfg.extraEsp)||0;
-      var hasS=ings.some(function(x){return x.k==='sueldo'&&wOf(x)===w}),hasX=ings.some(function(x){return wOf(x)===w&&(x.ex||x.k==='comision')});
+      var sv=Number(w==='yo'?cfg.sueldo:cfg.sueldoEsp)||0;
+      var hasS=ings.some(function(x){return x.k==='sueldo'&&wOf(x)===w});
       if(sv>0&&!hasS)prev.push({w:w,k:'sueldo',m:sv});
-      if(xv>0&&!hasX)prev.push({w:w,k:'otro',m:xv,extra:true});
     });
   }
   prev.forEach(function(p){ing+=p.m;byTipo[p.k]=(byTipo[p.k]||0)+p.m;who[p.w].ing+=p.m});
@@ -784,7 +786,7 @@ function summarize(q,cfg,qid,today){
   }
   return {r:r,ings:ings,gass:gass,ing:ing,gas:gas,extras:extras,nExtras:nExtras,fijosPag:fijosPag,pend:pend,fijosTot:fijosTot,obls:obls,
     meta:meta,libre:libre,phase:phase,dayIdx:dayIdx,daysLeft:daysLeft,spentToday:spentToday,dailyBudget:dailyBudget,leftToday:leftToday,
-    tope:tope,status:status,perDay:perDay,cntDay:cntDay,byCat:byCat,byTipo:byTipo,who:who,saved:ing-gas,prev:prev};
+    tope:tope,status:status,perDay:perDay,cntDay:cntDay,byCat:byCat,byTipo:byTipo,who:who,saved:ing-gas,prev:prev,porLlegar:prev.reduce(function(t,p){return t+p.m},0)};
 }
 /*LOGIC-END*/
 if(typeof module!=='undefined'&&module.exports){module.exports={qidOf:qidOf,qRange:qRange,qShift:qShift,qLabel:qLabel,summarize:summarize,money:money,metaOf:metaOf,obState:obState,monthIdx:monthIdx};return}
@@ -1028,7 +1030,7 @@ function startJoin(code){
     if(!r.data){toast('Ese enlace de invitación no es válido.');return goOwn()}
     var inv=S.inv=r.data;
     $('#jn-title').textContent=inv.yo?inv.yo+' te invita a llevar las cuentas juntos':'Te invitaron a llevar las cuentas juntos';
-    $('#jn-nombre').value=inv.esp&&inv.esp!=='Mi pareja'?inv.esp:'';$('#jn-sueldo').value='';$('#jn-extra').value='';
+    $('#jn-nombre').value=inv.esp&&inv.esp!=='Mi pareja'?inv.esp:'';$('#jn-sueldo').value='';$('#jn-tipo').value='extra';
     setMsg('#jn-msg','');$('#jn-warn').hidden=true;
     if(!S.own){showView('join');return}
     return sb.from('docs').select('id').eq('hogar_id',S.own.id).then(function(d){
@@ -1037,7 +1039,7 @@ function startJoin(code){
   });
 }
 function doJoin(){
-  var nombre=$('#jn-nombre').value.trim().slice(0,14),sueldo=digits($('#jn-sueldo').value),extra=digits($('#jn-extra').value);
+  var nombre=$('#jn-nombre').value.trim().slice(0,14),sueldo=digits($('#jn-sueldo').value),tipo=$('#jn-tipo').value;
   setMsg('#jn-msg','');
   if(!nombre){setMsg('#jn-msg','Escribe tu nombre para unirte.');$('#jn-nombre').focus();return}
   $('#jn-go').disabled=true;
@@ -1045,7 +1047,7 @@ function doJoin(){
     if(r.error)throw r.error;
     clearInvite();S.joinCode='';showView('loading');
     return openHogar(r.data).then(function(){
-      saveCfg(function(c){c.modo='pareja';c.nombres=c.nombres||{};c.nombres.yo=c.nombres.yo||'';c.nombres.esp=nombre;if(sueldo)c.sueldoEsp=sueldo;if(extra)c.extraEsp=extra});
+      saveCfg(function(c){c.modo='pareja';c.nombres=c.nombres||{};c.nombres.yo=c.nombres.yo||'';c.nombres.esp=nombre;if(sueldo)c.sueldoEsp=sueldo;c.extraTipoEsp=tipo});
       toast('Listo, '+nombre+'. Ya comparten las cuentas.');
     });
   }).catch(function(e){showView('join');setMsg('#jn-msg',errText(e))}).then(function(){$('#jn-go').disabled=false});
@@ -1090,7 +1092,7 @@ function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearT
 function fmtMoneyInput(el){var v=digits(el.value);el.value=v?v.toLocaleString('es-CO'):''}
 function defDate(){var r=qRange(S.cur);return TODAY>=r.start&&TODAY<=r.end?TODAY:(TODAY>r.end?r.end:r.start)}
 function syncForms(force){
-  ['#gas-fecha','#ing-fecha'].forEach(function(s){var el=$(s);if(force||!el.value||qidOf(el.value)!==S.cur)el.value=defDate()});
+  ['#gas-fecha'].forEach(function(s){var el=$(s);if(force||!el.value||qidOf(el.value)!==S.cur)el.value=defDate()});
 }
 function setTab(t,scroll){
   S.tab=t;TABS.forEach(function(k){
@@ -1099,20 +1101,20 @@ function setTab(t,scroll){
   try{localStorage.setItem(LS+':tab',t)}catch(e){}
   if(scroll)$('#p-'+t).scrollIntoView({block:'start'});
 }
-function goQ(qid){S.cur=qid;S.selDay=null;S.confirm=null;S.pay=null;cancelEdit('gas');cancelEdit('ing');syncForms(true);render()}
+function goQ(qid){S.cur=qid;S.selDay=null;S.confirm=null;S.pay=null;cancelEdit('gas');S.ci=null;syncForms(true);render()}
 function curSm(){return summarize(S.qs[S.cur]||{},S.cfg,S.cur,TODAY)}
 
 /* ---------- Pintado ---------- */
 function render(){
   var sm=curSm();
-  applyNames();renderInvite();renderTop(sm);renderHero(sm);renderFijos(sm);renderGastos(sm);renderPpto(sm);renderIngresos(sm);renderAhorro(sm);
+  applyNames();renderInvite();renderCheckin();renderTop(sm);renderHero(sm);renderFijos(sm);renderGastos(sm);renderPpto(sm);renderIngresos(sm);renderAhorro(sm);
   var anyIng=Object.keys(S.qs).some(function(id){return vals(S.qs[id].ing).length>0});
   var c=S.cfg||{};
   if(S.ready&&!S.readonly&&!c.listo&&!c.sueldo&&!anyIng&&!S.wzOpen&&!S.wzAuto){S.wzAuto=true;openWizard()}
   $('#wiz').hidden=!S.wzOpen;document.body.classList.toggle('wiz-on',!!S.wzOpen);
   $('#arma').hidden=!(S.ready&&!S.readonly&&c.listo&&!c.armado&&!S.wzOpen);
   var off=!S.ready||S.readonly;
-  ['#gas-submit','#ing-submit','#cfg-save'].forEach(function(s){$(s).disabled=off});
+  ['#gas-submit','#cfg-save'].forEach(function(s){$(s).disabled=off});
 }
 function renderTop(sm){
   $('#q-label').textContent=qLabel(S.cur);
@@ -1126,10 +1128,10 @@ function renderHero(sm){
   var sub;
   if(!S.ready)sub='Cargando tus datos…';
   else if(sm.ing===0)sub=(sm.fijosTot>0?'Esta quincena hay '+money(sm.fijosTot)+' en obligaciones. ':'')+'Registra los ingresos para ver cuánto '+PL('puedes','pueden')+' gastar.';
-  else sub='Entran '+money(sm.ing)+'. Ya se apartan '+money(sm.meta)+' de ahorro'+(sm.pend>0?' y '+money(sm.pend)+' de pagos fijos que faltan.':(sm.fijosPag>0?'. Pagos fijos al día.':'.'));
+  else sub='Entran '+money(sm.ing)+(sm.porLlegar>0?' (de eso falta que llegue '+money(sm.porLlegar)+')':'')+'. Ya se apartan '+money(sm.meta)+' de ahorro'+(sm.pend>0?' y '+money(sm.pend)+' de pagos fijos que faltan.':(sm.fijosPag>0?'. Pagos fijos al día.':'.'));
   var side='';
   if(S.ready&&sm.ing===0){
-    side='<div class="k">Primer paso</div><div class="d">Anota lo que entra en la quincena: sueldos, comisiones u otros ingresos.</div><button class="btn small" type="button" data-act="go-ing">Registrar ingreso</button>';
+    side='<div class="k">Primer paso</div><div class="d">Pon el sueldo básico de '+PL('tu quincena','cada uno')+' para ver cuánto '+PL('puedes','pueden')+' gastar.</div><button class="btn small" type="button" data-act="wiz">Poner sueldos</button>';
   }else if(sm.phase==='current'){
     side=sm.leftToday>=0
       ?'<div class="k">'+PL('Hoy puedes gastar','Hoy pueden gastar')+'</div><div class="v">'+money(sm.leftToday)+'</div>'
@@ -1246,22 +1248,138 @@ function readout(sm,d){
   el.innerHTML='<span>'+(d===TODAY?'Hoy · ':'')+dayLabel(d)+'</span><span><b>'+money(v)+'</b> en '+c+(c===1?' gasto':' gastos')+(sm.tope>0&&v>sm.tope?' · '+money(v-sm.tope)+' sobre el tope':'')+'</span>';
 }
 function renderIngresos(sm){
+  var cfg=S.cfg||{},qid=S.cur,people=isSolo()?['yo']:['yo','esp'];
   $('#ing-total').textContent=sm.ing>0?money(sm.ing):'';
-  var mx=Math.max.apply(null,TIPOS.map(function(t){return sm.byTipo[t[0]]||0}).concat([1]));
-  $('#tipo-list').innerHTML='<div class="cats">'+TIPOS.map(function(t){
-    var v=sm.byTipo[t[0]]||0;
-    return '<div class="cat">'+tile(t[0])+'<div><div class="nm"><span>'+t[1]+'</span><small class="num">'+(sm.ing?Math.round(v/sm.ing*100):0)+' %</small></div><div class="track"><span style="width:'+(v/mx*100).toFixed(1)+'%;background:var(--income)"></span></div></div><span class="amt">'+money(v)+'</span></div>';
-  }).join('')+'</div>'+(sm.ing>0&&!isSolo()?'<p class="hint" style="margin-top:12px">'+esc(nm('yo'))+' '+money(sm.who.yo.ing)+' · '+esc(nm('esp'))+' '+money(sm.who.esp.ing)+'</p>':'');
-  $('#ing-list').innerHTML=sm.ings.length?listHtml(sm.ings,'ing'):'<div class="empty"><strong>Aún no hay ingresos en esta quincena</strong>Registra los sueldos, una comisión o cualquier otra entrada.</div>';
-  $('#quick-sueldo').hidden=true;
-  var pv=sm.prev||[];
-  $('#prev-list').innerHTML=pv.length?'<p class="hint">Estos se cuentan solos cada quincena. Si esta vez fue distinto, cámbialo.</p><ul class="movs" style="margin-bottom:12px">'+pv.map(function(x){
-    var t=(x.k==='sueldo'?'Sueldo':'Extra')+(isSolo()?'':' de '+esc(nm(x.w)));
-    return '<li class="mov">'+tile(x.k==='sueldo'?'sueldo':'comision')+'<div class="t"><strong>'+t+'</strong><small>Previsto</small></div><span class="amt in">+'+money(x.m)+'</span>'+
-      '<div class="ops"><button class="btn small" type="button" data-act="prev-edit" data-w="'+x.w+'" data-k="'+(x.k==='sueldo'?'sueldo':'extra')+'" data-m="'+x.m+'">Cambiar</button>'+
-      (x.extra?'<button class="btn small" type="button" data-act="prev-none" data-w="'+x.w+'">No hubo</button>':'')+'</div></li>';
-  }).join('')+'</ul>':'';
+  var html=people.map(function(w){
+    var st=incState(qid,w),t=st.tipo,rows=[];
+    var who=sm.who[w].ing;
+    /* sueldo */
+    if(isCi(qid,w,'s','tab'))rows.push(ciEditRow(qid,w,'s','tab',st.sueldo?st.sueldo.m:st.sv));
+    else if(st.sueldo)rows.push(movRow('sueldo','Sueldo básico','<span class="tg ok">Llegó</span>'+(st.sv&&st.sueldo.m!==st.sv?' · normal '+money(st.sv):''),'+'+money(st.sueldo.m),'',
+      btn('ci-edit','Cambiar',qid,w,'s','tab')));
+    else if(st.sv>0)rows.push(movRow('sueldo','Sueldo básico','<span class="tg wait">Por llegar</span> · se cuenta solo','+'+money(st.sv),'wait',
+      btn('ci-yes','Llegó',qid,w,'s','tab',1)+btn('ci-edit','Otro valor',qid,w,'s','tab')));
+    else rows.push(movRow('sueldo','Sueldo básico','Todavía no está puesto','—','wait','<button class="btn small" type="button" data-act="wiz">Ponerlo</button>'));
+    /* comisiones / extra */
+    var xl=xLabel(t);
+    if(isCi(qid,w,'x','tab'))rows.push(ciEditRow(qid,w,'x','tab',st.extra&&st.extra.m||0));
+    else if(st.extra&&st.extra.m>0)rows.push(movRow(t==='comision'?'comision':'otro',xl,'<span class="tg ok">Anotado</span>','+'+money(st.extra.m),'',btn('ci-edit','Cambiar',qid,w,'x','tab')));
+    else if(st.extra)rows.push(movRow(t==='comision'?'comision':'otro',xl,'<span class="tg no">No hubo</span>','$ 0','wait',btn('ci-edit','Sí hubo',qid,w,'x','tab')));
+    else if(t!=='no')rows.push(movRow(t==='comision'?'comision':'otro',xl,'<span class="tg wait">Sin responder</span>','','wait',
+      btn('ci-edit','Sí, anotar',qid,w,'x','tab',1)+btn('ci-none','No hubo',qid,w,'x','tab')));
+    /* otros ingresos anotados antes */
+    st.others.forEach(function(x){
+      var conf=S.confirm==='ing:'+x.id;
+      rows.push(movRow(x.k==='comision'?'comision':'otro',esc(x.n||TIPON[x.k]||'Ingreso'),'Anotado a mano · '+dayLabel(x.d),'+'+money(x.m),'',
+        conf?'<button class="btn small" type="button" data-act="del-yes" data-kind="ing" data-id="'+x.id+'">Borrar</button><button class="btn small" type="button" data-act="del-no">No</button>'
+            :'<button class="iconbtn" type="button" data-act="del" data-kind="ing" data-id="'+x.id+'" aria-label="Borrar ingreso">'+ic('del')+'</button>'));
+    });
+    var sel='<label class="ip-cfg"><span>Cada quincena preguntar por</span><select data-ci-tipo="'+w+'">'+
+      [['comision','Comisiones'],['extra','Algo extra'],['ambos','Comisiones o extras'],['no','Nada más (solo sueldo)']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===t?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></label>';
+    return '<div class="ip">'+(isSolo()?'':'<div class="ip-h"><strong><i class="dot '+(w==='yo'?'k1':'k2')+'"></i>'+esc(nm(w))+'</strong><span class="num">'+money(who)+'</span></div>')+
+      '<ul class="movs">'+rows.join('')+'</ul>'+sel+'</div>';
+  }).join('');
+  html+='<div class="itot"><span>'+(isSolo()?'Total que entra':'Total de los dos')+'</span><span class="num">'+money(sm.ing)+'</span></div>'+
+    (sm.porLlegar>0?'<p class="hint" style="margin-top:8px">Incluye '+money(sm.porLlegar)+' de sueldo que aún no se ha confirmado.</p>':'');
+  $('#ing-body').innerHTML=html;
 }
+function movRow(icon,title,sub,amt,cls,ops){
+  return '<li class="mov">'+tile(icon)+'<div class="t"><strong>'+title+'</strong><small>'+sub+'</small></div><span class="amt '+(cls||'in')+'">'+amt+'</span><div class="ops">'+ops+'</div></li>';
+}
+function btn(act,label,qid,w,k,where,main){
+  return '<button class="btn small'+(main?' ok':'')+'" type="button" data-act="'+act+'" data-qid="'+qid+'" data-w="'+w+'" data-k="'+k+'" data-where="'+where+'">'+label+'</button>';
+}
+function xLabel(t){return t==='comision'?'Comisiones':(t==='extra'?'Algo extra':'Comisiones o extras')}
+function tipoOf(w){
+  var c=S.cfg||{},t=w==='yo'?c.extraTipoYo:c.extraTipoEsp;
+  return t==='comision'||t==='extra'||t==='no'||t==='ambos'?t:'ambos';
+}
+function incState(qid,w){
+  var q=S.qs[qid]||{},c=S.cfg||{},items=vals(q.ing).filter(function(x){return (x.w==='esp'?'esp':'yo')===w});
+  var sueldo=null,extra=null,others=[];
+  items.forEach(function(x){
+    if(x.k==='sueldo'){if(!sueldo)sueldo=x;else others.push(x)}
+    else if(x.ex||x.k==='comision'){if(!extra)extra=x;else others.push(x)}
+    else others.push(x);
+  });
+  return {sv:Number(w==='yo'?c.sueldo:c.sueldoEsp)||0,tipo:tipoOf(w),sueldo:sueldo,extra:extra,others:others,items:items};
+}
+function isCi(qid,w,k,where){var c=S.ci;return !!c&&c.qid===qid&&c.w===w&&c.k===k&&c.where===where}
+function ciEditRow(qid,w,k,where,val){
+  var lab=k==='s'?'Sueldo que llegó':xLabel(tipoOf(w));
+  return '<li class="mov ci-q-edit">'+tile(k==='s'?'sueldo':(tipoOf(w)==='comision'?'comision':'otro'))+'<div class="t"><strong>'+lab+'</strong><small>'+(isSolo()?'':esc(nm(w))+' · ')+'¿Cuánto fue?</small></div><span></span><span></span>'+
+    '<div class="ia"><div class="moneybox"><b>$</b><input type="text" id="ci-m" inputmode="numeric" autocomplete="off" data-money placeholder="0" value="'+(val?Number(val).toLocaleString('es-CO'):'')+'" aria-label="Valor"></div>'+
+    btn('ci-save','Guardar',qid,w,k,where,1)+btn('ci-cancel','Cancelar',qid,w,k,where)+'</div></li>';
+}
+/* La quincena que paga el día de pago más reciente: el 15 paga la del 16 al fin de mes; el 30/31 paga la del 1 al 15 del mes siguiente */
+function payTarget(today){
+  var d=Number(today.slice(8)),cur=qidOf(today),last=qRange(cur).last;
+  var pay=d===15||d>=30||(d===last&&cur.slice(-1)==='2');
+  return {qid:pay?qShift(cur,1):cur,payday:pay};
+}
+function laterKey(qid,w,k){return LS+':later:'+qid+':'+w+':'+k}
+function isLater(qid,w,k){try{return localStorage.getItem(laterKey(qid,w,k))===TODAY}catch(e){return !!(S.later&&S.later[laterKey(qid,w,k)])}}
+function setLater(qid,w,k){S.later=S.later||{};S.later[laterKey(qid,w,k)]=1;try{localStorage.setItem(laterKey(qid,w,k),TODAY)}catch(e){}}
+function renderCheckin(){
+  var el=$('#checkin'),c=S.cfg||{};
+  if(!S.ready||S.readonly||!c.listo||S.wzOpen){el.hidden=true;return}
+  var pt=payTarget(TODAY),qid=pt.qid;
+  if(c.desde&&qid<c.desde){el.hidden=true;return}
+  var r=qRange(qid),people=isSolo()?['yo']:['yo','esp'],qs=[];
+  people.forEach(function(w){
+    var st=incState(qid,w),name=isSolo()?'':esc(nm(w));
+    if(!st.sueldo&&st.sv>0&&(isCi(qid,w,'s','top')||!isLater(qid,w,'s'))){
+      if(isCi(qid,w,'s','top'))qs.push(ciEditRow(qid,w,'s','top',st.sv).replace('<li class="mov ci-q-edit">','<div class="ci-q">').replace(/<span><\/span><span><\/span>/,'').replace(/<\/li>$/,'</div>'));
+      else qs.push('<div class="ci-q">'+tile('sueldo')+'<p>¿Ya llegó '+(isSolo()?'tu sueldo':'el sueldo de '+name)+'?<small>Sueldo básico: '+money(st.sv)+'</small></p><div class="ci-b">'+
+        btn('ci-yes','Sí, llegó',qid,w,'s','top',1)+btn('ci-edit','Llegó otro valor',qid,w,'s','top')+btn('ci-later','Aún no',qid,w,'s','top')+'</div></div>');
+    }
+    if(!st.extra&&st.tipo!=='no'&&(isCi(qid,w,'x','top')||!isLater(qid,w,'x'))){
+      var t=st.tipo,ico=t==='comision'?'comision':'otro';
+      var qq=t==='comision'?(isSolo()?'¿Tuviste comisiones esta quincena?':'¿'+name+' tuvo comisiones esta quincena?')
+        :(t==='extra'?(isSolo()?'¿Tuviste algo extra aparte del sueldo?':'¿'+name+' tuvo algo extra aparte del sueldo?')
+        :(isSolo()?'¿Tuviste comisiones o algo extra?':'¿'+name+' tuvo comisiones o algo extra?'));
+      if(isCi(qid,w,'x','top'))qs.push(ciEditRow(qid,w,'x','top',0).replace('<li class="mov ci-q-edit">','<div class="ci-q">').replace(/<span><\/span><span><\/span>/,'').replace(/<\/li>$/,'</div>'));
+      else qs.push('<div class="ci-q">'+tile(ico)+'<p>'+qq+'<small>Si sí, anota cuánto fue</small></p><div class="ci-b">'+
+        btn('ci-edit','Sí, ¿cuánto?',qid,w,'x','top',1)+btn('ci-none','No hubo',qid,w,'x','top')+btn('ci-later','Después',qid,w,'x','top')+'</div></div>');
+    }
+  });
+  if(!qs.length){el.hidden=true;el.innerHTML='';return}
+  var dd=Number(TODAY.slice(8));
+  var title=pt.payday?'¡Hoy es día de pago!':'¿Ya llegó la plata de esta quincena?';
+  el.innerHTML='<div class="ci-head">'+tile('sueldo')+'<div><strong>'+title+'</strong><small>Quincena del '+r.first+' al '+r.last+' de '+MESES[r.m-1]+(dd===15||pt.payday?'':'')+'</small></div></div><div class="ci-list">'+qs.join('')+'</div>';
+  el.hidden=false;
+}
+function setIncome(qid,w,k,m){
+  var st=incState(qid,w),r=qRange(qid),d=qidOf(TODAY)===qid?TODAY:r.start;
+  (k==='s'?(st.sueldo?[st.sueldo]:[]):(st.extra?[st.extra]:[])).forEach(function(x){commit({t:'item',qid:qid,kind:'ing',id:x.id,val:null})});
+  var val;
+  if(k==='s')val={m:m,k:'sueldo',d:d,n:'',w:w,t:Date.now()};
+  else{var t=st.tipo;val={m:m,k:t==='comision'?'comision':'otro',ex:true,d:d,n:m?(t==='comision'?'Comisiones':(t==='extra'?'Extra':'Comisiones o extras')):'No hubo '+(t==='comision'?'comisiones':'extra'),w:w,t:Date.now()}}
+  commit({t:'item',qid:qid,kind:'ing',id:uid(),val:val});
+}
+function ciAction(a,b){
+  if(!S.ready||S.readonly)return;
+  var qid=b.dataset.qid,w=b.dataset.w==='esp'?'esp':'yo',k=b.dataset.k==='x'?'x':'s',where=b.dataset.where==='top'?'top':'tab';
+  var who=isSolo()?'':' de '+nm(w);
+  if(a==='ci-yes'){var sv=incState(qid,w).sv;if(!sv)return;S.ci=null;setIncome(qid,w,'s',sv);toast('Sueldo'+who+' confirmado: '+money(sv))}
+  else if(a==='ci-edit'){S.ci={qid:qid,w:w,k:k,where:where};render();var el=$('#ci-m');if(el){el.focus();try{el.select()}catch(e){}}}
+  else if(a==='ci-cancel'){S.ci=null;render()}
+  else if(a==='ci-none'){S.ci=null;setIncome(qid,w,'x',0);toast('Listo: sin '+(tipoOf(w)==='comision'?'comisiones':'extra')+' esta quincena')}
+  else if(a==='ci-later'){setLater(qid,w,k);S.ci=null;render();toast('Te pregunto otra vez mañana')}
+  else if(a==='ci-save'){
+    var m=digits(($('#ci-m')||{}).value||'');
+    if(!m&&k==='s'){toast('Escribe cuánto llegó.');$('#ci-m').focus();return}
+    S.ci=null;setIncome(qid,w,k,m);
+    toast(k==='s'?'Sueldo'+who+' guardado: '+money(m):(m?xLabel(tipoOf(w))+who+': '+money(m):'Listo: no hubo esta quincena'));
+  }
+}
+document.addEventListener('change',function(e){
+  var w=e.target.dataset&&e.target.dataset.ciTipo;if(!w||!S.ready||S.readonly)return;
+  var v=e.target.value;saveCfg(function(c){if(w==='esp')c.extraTipoEsp=v;else c.extraTipoYo=v});toast('Guardado');
+});
+document.addEventListener('keydown',function(e){
+  if(e.target&&e.target.id==='ci-m'&&e.key==='Enter'){e.preventDefault();var b=e.target.closest('.ia').querySelector('[data-act="ci-save"]');if(b)b.click()}
+});
 function renderAhorro(sm){
   var closed=0,nClosed=0;
   Object.keys(S.qs).forEach(function(id){var r=qRange(id);if(r.end<TODAY){var s=summarize(S.qs[id],S.cfg,id,TODAY);if(s.ing||s.gas){closed+=s.saved;nClosed++}}});
@@ -1301,7 +1419,6 @@ function renderAhorro(sm){
 function cancelEdit(kind){
   if(S.edit&&S.edit.kind===kind)S.edit=null;
   if(kind==='gas'){$('#gas-title').textContent='Anotar un gasto';$('#gas-submit').textContent='Guardar gasto';$('#gas-cancel').hidden=true;$('#gas-monto').value='';$('#gas-nota').value=''}
-  else{S.prevEx=false;$('#ing-title').textContent='Anotar otro ingreso';$('#ing-submit').textContent='Guardar ingreso';$('#ing-cancel').hidden=true;$('#ing-monto').value='';$('#ing-nota').value=''}
 }
 function startEdit(kind,id){
   var q=S.qs[S.cur],x=q&&q[kind]&&q[kind][id];if(!x)return;
@@ -1410,20 +1527,20 @@ function openWizard(step){
   if(!S.ready||S.readonly)return;
   closeSettings();
   var c=S.cfg||{},n=c.nombres||{},me=soyW(),ot=otro(me);
-  var sue={yo:c.sueldo,esp:c.sueldoEsp},ext={yo:c.extraYo,esp:c.extraEsp};
+  var sue={yo:c.sueldo,esp:c.sueldoEsp},tip={yo:tipoOf('yo'),esp:tipoOf('esp')};
   var obls=(c.obls)||{},pp=c.ppto||{},pareja=c.modo==='pareja'||(!c.listo);
   var person=function(w,pfx,title,hint){
     return '<div class="person"'+(pfx==='ot'?' data-wz-par':'')+'><strong>'+title+'</strong><div class="grid3">'+
       '<label class="field"><span>Nombre</span><input type="text" id="wz-n-'+pfx+'" maxlength="14" autocomplete="off" placeholder="'+(pfx==='me'?'Tu nombre':'Su nombre')+'" value="'+esc(n[w]&&n[w]!=='Mi pareja'?n[w]:'')+'"></label>'+
-      '<label class="field"><span>Sueldo normal por quincena</span><div class="moneybox"><b>$</b><input type="text" id="wz-s-'+pfx+'" inputmode="numeric" autocomplete="off" data-money placeholder="0" value="'+fmtV(sue[w])+'"></div></label>'+
-      '<label class="field"><span>Extra en la quincena (si hay)</span><div class="moneybox"><b>$</b><input type="text" id="wz-x-'+pfx+'" inputmode="numeric" autocomplete="off" data-money placeholder="0" value="'+fmtV(ext[w])+'"></div></label>'+
+      '<label class="field"><span>Sueldo básico por quincena</span><div class="moneybox"><b>$</b><input type="text" id="wz-s-'+pfx+'" inputmode="numeric" autocomplete="off" data-money placeholder="0" value="'+fmtV(sue[w])+'"></div></label>'+
+      '<label class="field"><span>¿Recibe algo más aparte del sueldo?</span><select id="wz-t-'+pfx+'">'+[['comision','Sí, comisiones'],['extra','A veces algo extra'],['ambos','Comisiones o extras'],['no','No, solo el sueldo']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===tip[w]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></label>'+
       '</div>'+(hint?'<p class="hint">'+hint+'</p>':'')+'</div>';
   };
   var isPre=function(k){return FIJOS_P.some(function(f){return f[0]===k})};
   var motoAlias=!obls.moto?Object.keys(obls).filter(function(k){return !isPre(k)&&/moto/i.test(obls[k].n||'')})[0]:null;
   var custom=Object.keys(obls).filter(function(k){return !isPre(k)&&k!==motoAlias}).map(function(k){return Object.assign({id:k},obls[k])}).sort(function(a,b){return (a.o||0)-(b.o||0)});
   var html=
-  '<div class="wiz-pane" data-step="1"><h3>¿Quiénes son y cuánto ganan?</h3><p>Con esto la app calcula cuánto pueden gastar cada quincena. El extra es lo que suele entrar además del sueldo: comisiones, horas extra, ventas. Pon un promedio.</p>'+
+  '<div class="wiz-pane" data-step="1"><h3>¿Quiénes son y cuánto ganan?</h3><p>Pon solo el sueldo básico de cada uno. Cada día de pago (el 15 y el 30 o 31) la app pregunta si llegó y, si aplica, cuánto hubo de comisiones o extras.</p>'+
     '<fieldset><legend>¿Cómo la van a usar?</legend><div class="seg two-opt"><label class="chip"><input type="radio" name="wz-modo" id="wz-modo-solo" value="solo"'+(pareja?'':' checked')+'><span>Por mi cuenta</span></label><label class="chip"><input type="radio" name="wz-modo" id="wz-modo-par" value="pareja"'+(pareja?' checked':'')+'><span>En pareja</span></label></div></fieldset>'+
     person(me,'me','Tus datos','')+
     person(ot,'ot','Tu pareja','Si no sabes sus datos, déjalos vacíos: tu pareja los llena cuando entre con la invitación.')+
@@ -1473,7 +1590,7 @@ function wzRows(sel){
   });
 }
 function wzSummary(){
-  var solo=wzSolo(),ing=digits($('#wz-s-me').value)+digits($('#wz-x-me').value)+(solo?0:digits($('#wz-s-ot').value)+digits($('#wz-x-ot').value));
+  var solo=wzSolo(),ing=digits($('#wz-s-me').value)+(solo?0:digits($('#wz-s-ot').value));
   var fq={1:0,2:0},pp=0;
   wzRows('#wiz [data-step="2"]').forEach(function(r){if(!r.m||(solo&&r.par))return;if(r.q===1||r.q===2)fq[r.q]+=r.m;else{fq[1]+=r.m;fq[2]+=r.m}});
   wzRows('#wiz [data-step="3"]').forEach(function(r){pp+=r.m});
@@ -1483,13 +1600,13 @@ function wzSummary(){
   var a=col(1),b=col(2);
   var row=function(t,x,y,cls){return '<tr'+(cls?' class="'+cls+'"':'')+'><td>'+t+'</td><td>'+x+'</td><td>'+y+'</td></tr>'};
   $('#wz-sum').innerHTML='<table><thead><tr><th>Por quincena</th><th>1ª · 1–15</th><th>2ª · 16–fin</th></tr></thead><tbody>'+
-    row('Entra (sueldos y extras)',money(ing),money(ing))+
+    row('Entra (sueldos básicos)',money(ing),money(ing))+
     row('Gastos fijos','−'+money(a.f),'−'+money(b.f))+
     row('Presupuestos','−'+money(pp),'−'+money(pp))+
     row('Ahorro','−'+money(meta),'−'+money(meta))+
     row('Queda libre',money(a.l),money(b.l),'tot')+'</tbody></table>'+
     (!solo&&!digits($('#wz-s-ot').value)?'<p class="hint" style="margin-top:10px">Todavía falta lo que gana '+esc(wzName(otro(soyW())))+'. Cuando lo llene, el resumen se completa.</p>':'')+
-    (a.l<0||b.l<0?'<p class="msg warn" style="margin-top:10px">En alguna quincena sale más de lo que entra. Bajen presupuestos o el ahorro, o pasen algún pago fijo a la otra quincena.</p>':(ing===0?'<p class="hint" style="margin-top:10px">Sin ingresos todavía: complétenlos en el paso 1 para ver el resumen.</p>':''));
+    (a.l<0||b.l<0?'<p class="msg warn" style="margin-top:10px">En alguna quincena sale más de lo que entra. Bajen presupuestos o el ahorro, o pasen algún pago fijo a la otra quincena.</p>':(ing===0?'<p class="hint" style="margin-top:10px">Sin ingresos todavía: complétenlos en el paso 1 para ver el resumen.</p>':'<p class="hint" style="margin-top:10px">Las comisiones y extras se suman cuando lleguen: la app las pregunta cada día de pago.</p>'));
 }
 function wzNext(){
   var st=S.wzStep;
@@ -1500,13 +1617,13 @@ function wzNext(){
 function wzSave(){
   var me=soyW(),ot=otro(me),solo=wzSolo(),was=!!(S.cfg&&S.cfg.listo);
   var nMe=$('#wz-n-me').value.trim().slice(0,14),nOt=$('#wz-n-ot').value.trim().slice(0,14);
-  var sMe=digits($('#wz-s-me').value),xMe=digits($('#wz-x-me').value),sOt=digits($('#wz-s-ot').value),xOt=digits($('#wz-x-ot').value);
+  var sMe=digits($('#wz-s-me').value),xMe=$('#wz-t-me').value,sOt=digits($('#wz-s-ot').value),xOt=$('#wz-t-ot').value;
   var fijos=wzRows('#wiz [data-step="2"]'),ppto=wzRows('#wiz [data-step="3"]'),metaIn=$('#wz-meta');
   saveCfg(function(c){
     var nn=c.nombres||{};nn[me]=nMe;if(!solo)nn[ot]=nOt||nn[ot]||'Mi pareja';c.nombres=nn;
     c.modo=solo?'solo':'pareja';
-    var setI=function(w,sv,xv){if(w==='yo'){c.sueldo=sv;c.extraYo=xv}else{c.sueldoEsp=sv;c.extraEsp=xv}};
-    setI(me,sMe,xMe);if(!solo&&(sOt||xOt||!was))setI(ot,sOt,xOt);
+    var setI=function(w,sv,xv){if(w==='yo'){c.sueldo=sv;c.extraTipoYo=xv}else{c.sueldoEsp=sv;c.extraTipoEsp=xv}};
+    setI(me,sMe,xMe);if(!solo){if(ot==='yo')c.extraTipoYo=xOt;else c.extraTipoEsp=xOt;if(sOt||!was){if(ot==='yo')c.sueldo=sOt;else c.sueldoEsp=sOt}}
     if(metaIn){c.metaTipo='pct';c.metaValor=Math.min(99,digits(metaIn.value))}
     c.obls=c.obls||{};var ord=1;
     fijos.forEach(function(r){
@@ -1572,7 +1689,6 @@ function renderPpto(sm){
 
 /* ---------- Eventos ---------- */
 $('#gas-cats').innerHTML=CATS.map(function(c,i){return '<label class="chip"><input type="radio" name="cat" id="cat-'+c[0]+'" value="'+c[0]+'"'+(i===0?' checked':'')+'><span>'+ic(c[0])+c[1]+'</span></label>'}).join('');
-$('#ing-tipos').innerHTML=TIPOS.map(function(c,i){return '<label class="chip"><input type="radio" name="tipo" id="tipo-'+c[0]+'" value="'+c[0]+'"'+(i===0?' checked':'')+'><span>'+c[1]+'</span></label>'}).join('');
 document.addEventListener('input',function(e){
   var t=e.target;
   if(t.matches&&t.matches('[data-money]'))fmtMoneyInput(t);
@@ -1592,9 +1708,7 @@ document.addEventListener('change',function(e){
   if(e.target.name==='cat')gasHint();
 });
 $('#f-gas').addEventListener('submit',function(e){e.preventDefault();submitMov('gas')});
-$('#f-ing').addEventListener('submit',function(e){e.preventDefault();submitMov('ing')});
 $('#gas-cancel').addEventListener('click',function(){cancelEdit('gas');syncForms(true)});
-$('#ing-cancel').addEventListener('click',function(){cancelEdit('ing');syncForms(true)});
 $('#q-prev').addEventListener('click',function(){goQ(qShift(S.cur,-1))});
 $('#q-next').addEventListener('click',function(){goQ(qShift(S.cur,1))});
 $('#q-today').addEventListener('click',function(){goQ(qidOf(TODAY))});
@@ -1630,7 +1744,7 @@ document.addEventListener('click',function(e){
   if(b.dataset.day){S.selDay=S.selDay===b.dataset.day?null:b.dataset.day;render();return}
   if(b.dataset.q&&!b.dataset.act){goQ(b.dataset.q);window.scrollTo({top:0,behavior:'smooth'});return}
   var a=b.dataset.act,kind=b.dataset.kind,id=b.dataset.id,sm;
-  if(a==='go-ing'){setTab('ingresos',true);$('#ing-monto').focus()}
+  if(a==='go-ing'){setTab('ingresos',true)}
   else if(a==='go-gas'){setTab('gastos',true);$('#gas-monto').focus()}
   else if(a==='settings')openSettings();
   else if(a==='edit'){if(kind==='ob')startObEdit(id);else startEdit(kind,id)}
@@ -1667,25 +1781,7 @@ document.addEventListener('click',function(e){
   else if(a==='wiz')openWizard();
   else if(a==='wiz-fijos')openWizard(2);
   else if(a==='wiz-ppto')openWizard(3);
-  else if(a==='prev-edit'){
-    var pw2=b.dataset.w==='esp'?'esp':'yo',isS=b.dataset.k==='sueldo';
-    cancelEdit('ing');S.prevEx=!isS;setRadio('ing-w',pw2);setRadio('tipo',isS?'sueldo':'comision');
-    $('#ing-monto').value=Number(b.dataset.m||0).toLocaleString('es-CO');$('#ing-nota').value=isS?'':'Extra de la quincena';
-    $('#ing-title').textContent=isS?'Sueldo de esta quincena':'Extra de esta quincena';
-    $('#f-ing').scrollIntoView({block:'center'});$('#ing-monto').focus();$('#ing-monto').select();
-  }
-  else if(a==='prev-none'){
-    var pw3=b.dataset.w==='esp'?'esp':'yo';
-    commit({t:'item',qid:S.cur,kind:'ing',id:uid(),val:{m:0,k:'otro',d:defDate(),n:'Sin extra esta quincena',w:pw3,ex:true,t:Date.now()}});toast('Listo: esta quincena sin extra');
-  }
-  else if(a==='quick-extra'){
-    var wx=b.dataset.w==='esp'?'esp':'yo',cx=S.cfg||{},vx=Number(wx==='yo'?cx.extraYo:cx.extraEsp)||0;if(!vx)return;
-    commit({t:'item',qid:S.cur,kind:'ing',id:uid(),val:{m:vx,k:'otro',d:defDate(),n:'Ingreso extra',w:wx,t:Date.now()}});toast('Ingreso extra registrado');
-  }
-  else if(a==='quick-sueldo'){
-    var w=b.dataset.w==='esp'?'esp':'yo',c=S.cfg||{},s=Number(w==='yo'?c.sueldo:c.sueldoEsp)||0;if(!s)return;
-    commit({t:'item',qid:S.cur,kind:'ing',id:uid(),val:{m:s,k:'sueldo',d:defDate(),n:'',w:w,t:Date.now()}});toast('Sueldo registrado');
-  }
+  else if(a&&a.indexOf('ci-')===0)ciAction(a,b);
 });
 $('#daychart').addEventListener('mouseover',function(e){
   var b=e.target.closest('[data-day]');if(b)readout(curSm(),b.dataset.day);
