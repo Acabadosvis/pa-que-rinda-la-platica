@@ -277,7 +277,7 @@ dialog form{display:grid;gap:14px}
   .two{display:flex;flex-direction:column;align-items:stretch}
   .colx{display:contents}
   #card-obls{order:1} #f-ob{order:2} #card-obtpl{order:3}
-  #f-gas{order:1} #card-chart{order:2} #card-list{order:3} #card-cats{order:4}
+  #f-gas{order:1} #card-ppto{order:2} #card-chart{order:3} #card-list{order:4} #card-cats{order:5}
   #f-ing{order:1} #card-tipos{order:2} #card-inglist{order:3}
   .stats{grid-template-columns:minmax(0,1fr)}
 }
@@ -307,6 +307,64 @@ dialog form{display:grid;gap:14px}
   .mov .ops .iconbtn{width:30px;height:30px}
   .chips{grid-template-columns:repeat(2,minmax(0,1fr))}
   .chips .chip span{flex-direction:row;justify-content:flex-start;text-align:left;gap:8px;padding:10px}
+}
+
+/* Asistente para organizar la plata y presupuestos */
+.callout{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--surface);border:2px dashed var(--accent);border-radius:var(--r);padding:16px 18px}
+.callout strong{font-family:var(--display);font-weight:600;font-size:18px;display:block}
+.callout>div:first-child{flex:1 1 240px;min-width:0}
+.wiz{background:var(--surface);border:2px solid var(--accent);border-radius:var(--r);padding:20px;display:grid;gap:16px;box-shadow:var(--shadow)}
+.wiz-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.wiz-kicker{font-size:12.5px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-right:auto}
+.wiz-steps{display:flex;gap:6px}
+.wiz-steps i{width:30px;height:7px;border-radius:4px;background:var(--line)}
+.wiz-steps i.on{background:var(--accent)}
+.wiz-pane{display:grid;gap:14px}
+.wiz-pane h3{font-family:var(--display);font-weight:600;font-size:23px;line-height:1.2;text-wrap:balance}
+.wiz-pane>p{color:var(--ink-2);max-width:64ch;font-weight:600}
+.person{display:grid;gap:12px;background:var(--surface-2);border-radius:18px;padding:14px}
+.person>strong{font-family:var(--display);font-weight:600;font-size:17px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.person .moneybox,.person input[type="text"]{background:var(--surface)}
+.wrows{display:grid}
+.wrow{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,.85fr) minmax(0,.9fr);gap:8px;align-items:center;padding-block:9px;border-top:1px solid var(--line)}
+.wrows.ppto .wrow{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,.9fr)}
+.wiz.solo .wrow{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,.85fr)}
+.wiz.solo .wrows.ppto .wrow{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+.wiz.solo .w-w,.wiz.solo [data-wz-par]{display:none!important}
+.wname{display:flex;align-items:center;gap:10px;font-weight:800;min-width:0}
+.wname span{overflow-wrap:anywhere}
+.wname .ico{width:36px;height:36px;border-radius:12px}
+.wname input{flex:1}
+.wrow select{font-size:15px;min-height:46px;padding:9px 10px}
+.wrow .moneybox{min-height:46px}
+.wrow .moneybox input{min-height:42px}
+.whead{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,.85fr) minmax(0,.9fr);gap:8px;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.wrows.ppto .whead{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,.9fr)}
+.wiz.solo .whead{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,.85fr)}
+.wiz.solo .wrows.ppto .whead{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+.wiz.solo .whead .w-w{display:none}
+.wiz-actions{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.wiz-actions .primary{flex:1 1 200px;max-width:340px;margin-left:auto}
+.wsum{overflow-x:auto}
+.wsum table{min-width:0}
+.wsum td,.wsum th{padding:9px 10px}
+.wsum td+td{white-space:nowrap}
+.wsum tr.tot td{font-weight:800;border-top:2px solid var(--line)}
+.wsum tbody tr{cursor:default}
+.wsum tbody tr:hover{background:transparent}
+.wiz-on #hero,.wiz-on .tabs,.wiz-on .panel,.wiz-on #invite,.wiz-on #arma{display:none!important}
+.track span.warn{background:var(--saving)}
+.track span.over{background:var(--expense)}
+.track span.ok{background:var(--good)}
+.pp-sub{font-size:13px;color:var(--muted);font-weight:600}
+@media (max-width:640px){
+  .grid3{grid-template-columns:minmax(0,1fr)}
+  .whead{display:none!important}
+  .wrow,.wrows.ppto .wrow,.wiz.solo .wrow,.wiz.solo .wrows.ppto .wrow{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wrow .wname{grid-column:1 / -1}
+  .wrows.ppto .wrow .moneybox,.wiz.solo .wrow .moneybox{grid-column:auto}
+  .wiz.solo .wrows.ppto .wrow .moneybox{grid-column:1 / -1}
 }
 
 /* Base del documento (versión web independiente) */
@@ -375,7 +433,9 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
     <h1 id="jn-title">Te invitaron a llevar las cuentas juntos</h1>
     <p class="hint">Al unirte van a ver y anotar sobre los mismos datos, cada uno con su cuenta y desde su celular.</p>
     <label class="field"><span>¿Cómo te llamas?</span><input type="text" id="jn-nombre" maxlength="14" autocomplete="off" placeholder="Tu nombre"></label>
-    <label class="field"><span>Tu sueldo fijo por quincena (opcional)</span><div class="moneybox"><b>$</b><input type="text" id="jn-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
+    <label class="field"><span>Tu sueldo normal por quincena</span><div class="moneybox"><b>$</b><input type="text" id="jn-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
+    <label class="field"><span>¿Te entra algo extra en la quincena? (opcional)</span><div class="moneybox"><b>$</b><input type="text" id="jn-extra" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
+    <p class="hint">Comisiones, horas extra, ventas: pon un promedio.</p>
     <p class="msg warn" id="jn-warn" hidden>En tu cuenta ya hay cuentas guardadas. Al unirte se reemplazan por las del espacio compartido.</p>
     <p class="msg err" id="jn-msg" role="status" hidden></p>
     <button class="btn primary" type="submit" id="jn-go">Unirme</button>
@@ -412,22 +472,16 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
     <div class="inv-actions"><a class="btn primary small" id="inv-wa" target="_blank" rel="noopener" href="#">Enviar por WhatsApp</a><button class="btn small" type="button" id="inv-copy">Copiar enlace</button></div>
   </div>
 
-  <form class="onboard" id="onboard" hidden>
-    <h2>Hola, armemos tu app</h2>
-    <p>Dime cómo te llamas y si la vas a usar por tu cuenta o en pareja. Con los ingresos, las obligaciones y la meta de ahorro, la app dice cada día cuánto se puede gastar sin tocar el ahorro. Todo se puede cambiar después en Ajustes.</p>
-    <div class="grid">
-      <label class="field"><span>¿Cómo te llamas?</span><input type="text" id="ob-nombre" maxlength="14" autocomplete="off" placeholder="Tu nombre"></label>
-      <fieldset><legend>¿Cómo la vas a usar?</legend><div class="seg two-opt">
-        <label class="chip"><input type="radio" name="ob-modo" id="ob-modo-solo" value="solo" checked><span>Por mi cuenta</span></label>
-        <label class="chip"><input type="radio" name="ob-modo" id="ob-modo-par" value="pareja"><span>En pareja</span></label>
-      </div></fieldset>
-      <label class="field" data-ob-par hidden><span>Nombre de tu pareja</span><input type="text" id="ob-nombre-esp" maxlength="14" autocomplete="off" placeholder="Su nombre"></label>
-      <label class="field"><span>Tu sueldo fijo por quincena (opcional)</span><div class="moneybox"><b>$</b><input type="text" id="ob-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
-      <label class="field" data-ob-par hidden><span>Sueldo fijo de tu pareja (opcional)</span><div class="moneybox"><b>$</b><input type="text" id="ob-sueldo-esp" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
-      <label class="field"><span>Ahorro (% de lo que entra)</span><div class="moneybox"><input type="text" id="ob-meta" inputmode="numeric" autocomplete="off" value="10" maxlength="2"><b>%</b></div></label>
-      <button class="btn primary" type="submit">Empezar</button>
-    </div>
-  </form>
+  <section class="wiz" id="wiz" hidden aria-labelledby="wiz-kicker">
+    <div class="wiz-top"><span class="wiz-kicker" id="wiz-kicker">Organicemos la plata · paso 1 de 4</span><div class="wiz-steps" aria-hidden="true"><i></i><i></i><i></i><i></i></div><button class="link" type="button" id="wiz-close">Cerrar</button></div>
+    <div id="wiz-body"></div>
+    <div class="wiz-actions"><button class="btn" type="button" id="wiz-back">Atrás</button><button class="btn primary" type="button" id="wiz-next">Siguiente</button></div>
+  </section>
+
+  <div class="callout" id="arma" hidden>
+    <div><strong>Organicemos la plata</strong><p class="hint">En 4 pasos: lo que gana cada uno, los gastos fijos (juntos o por separado) y cuánto piensan gastar en comida, mascota y más.</p></div>
+    <button class="btn primary small" type="button" data-act="wiz">Empezar</button>
+  </div>
 
   <section class="hero" id="hero" aria-live="polite"></section>
 
@@ -457,7 +511,7 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
             <label class="field"><span>¿En cuál quincena?</span><select id="obl-q"><option value="1">Primera · 1–15</option><option value="2">Segunda · 16–fin</option><option value="0">Las dos</option></select></label>
             <label class="field"><span>¿Cada cuánto?</span><select id="obl-cada"><option value="1">Cada mes</option><option value="2">Cada 2 meses</option></select></label>
             <label class="field"><span>Categoría</span><select id="obl-cat"></select></label>
-            <label class="field" data-par-only><span>¿Quién suele pagarla?</span><select id="obl-w"><option value="yo" data-who="yo"></option><option value="esp" data-who="esp"></option></select></label>
+            <label class="field" data-par-only><span>¿Quién la paga?</span><select id="obl-w"><option value="juntos">Entre los dos</option><option value="yo" data-who="yo"></option><option value="esp" data-who="esp"></option></select></label>
           </div>
           <label class="check"><input type="checkbox" id="obl-aprox">El valor es aproximado (cambia cada vez)</label>
           <div class="actions">
@@ -500,6 +554,10 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
         </div>
       </div>
       <div class="colx">
+        <div class="card" id="card-ppto">
+          <div class="card-h"><h2>Presupuesto de la quincena</h2><span class="aside num" id="ppto-aside"></span></div>
+          <div id="ppto-list"></div>
+        </div>
         <div class="card" id="card-chart">
           <div class="card-h"><h2>Gasto extra por día</h2><span class="aside" id="chart-aside"></span></div>
           <div id="daychart"></div>
@@ -565,6 +623,7 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
 <dialog id="dlg" aria-labelledby="dlg-h">
   <form id="f-cfg" method="dialog">
     <h2 id="dlg-h">Ajustes</h2>
+    <button class="btn" type="button" data-act="wiz">Organizar la plata: ingresos, fijos y presupuestos</button>
     <fieldset><legend>¿Cómo usas la app?</legend><div class="seg two-opt"><label class="chip"><input type="radio" name="cfg-modo" id="cfg-modo-solo" value="solo"><span>Por mi cuenta</span></label><label class="chip"><input type="radio" name="cfg-modo" id="cfg-modo-par" value="pareja" checked><span>En pareja</span></label></div></fieldset>
     <div class="grid2"><label class="field"><span>Tu nombre</span><input type="text" id="cfg-n-yo" maxlength="14" autocomplete="off"></label><label class="field" data-cfg-par><span>Nombre de tu pareja</span><input type="text" id="cfg-n-esp" maxlength="14" autocomplete="off"></label></div>
     <label class="field"><span>Tu sueldo fijo por quincena</span><div class="moneybox"><b>$</b><input type="text" id="cfg-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
@@ -688,7 +747,7 @@ function summarize(q,cfg,qid,today){
 /*LOGIC-END*/
 if(typeof module!=='undefined'&&module.exports){module.exports={qidOf:qidOf,qRange:qRange,qShift:qShift,qLabel:qLabel,summarize:summarize,money:money,metaOf:metaOf,obState:obState,monthIdx:monthIdx};return}
 
-var CATS=[['mercado','Mercado'],['transporte','Transporte'],['comida','Comidas fuera'],['vivienda','Arriendo y hogar'],['servicios','Servicios y celular'],['salud','Salud'],['ocio','Ocio y salidas'],['ropa','Ropa y cuidado'],['deudas','Deudas y cuotas'],['otros','Otros']];
+var CATS=[['comida','Comida'],['mercado','Mercado'],['transporte','Transporte'],['vivienda','Arriendo y hogar'],['servicios','Servicios y celular'],['mascota','Mascota'],['salud','Salud'],['ocio','Salidas y gustos'],['ropa','Ropa y cuidado'],['deudas','Deudas y cuotas'],['regalos','Regalos'],['otros','Otros']];
 var TIPOS=[['sueldo','Sueldo'],['comision','Comisiones'],['otro','Otros ingresos']];
 var CATN={},TIPON={};CATS.forEach(function(c){CATN[c[0]]=c[1]});TIPOS.forEach(function(c){TIPON[c[0]]=c[1]});
 var TABS=['fijos','gastos','ingresos','ahorro'];
@@ -702,6 +761,8 @@ var P={
   ocio:'<path d="M12 4l2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8z"/>',
   ropa:'<path d="M8.5 4L3.5 7l2 4 2-1v10h9V10l2 1 2-4-5-3a3.5 3.5 0 0 1-7 0z"/>',
   deudas:'<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18M7 15h4"/>',
+  mascota:'<circle cx="6.5" cy="10" r="1.7"/><circle cx="10" cy="6.5" r="1.7"/><circle cx="14.5" cy="6.5" r="1.7"/><circle cx="18" cy="10" r="1.7"/><path d="M8 16.6c0-2.6 1.9-4.6 4.2-4.6s4.3 2 4.3 4.6c0 1.6-1.2 2.4-2.4 2.4-.9 0-1.3-.5-1.9-.5s-1 .5-1.9.5C9.2 19 8 18.2 8 16.6z"/>',
+  regalos:'<rect x="4" y="9" width="16" height="11" rx="2"/><path d="M4 13h16M12 9v11M12 9C10.5 6 7 5.5 7 8c0 1.5 3 1 5 1zM12 9c1.5-3 5-3.5 5-1 0 1.5-3 1-5 1z"/>',
   otros:'<circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>',
   sueldo:'<rect x="3" y="6" width="18" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v5M17.5 9.5v5"/>',
   comision:'<path d="M4 17l5-5 4 3 7-8M15 7h5v5"/>',
@@ -716,7 +777,7 @@ var P={
   piggy:'<path d="M4 12a7 6 0 0 1 7-6h3l3-2v3.5a6 6 0 0 1 2 3.5h1.5v3H19a6 6 0 0 1-2 2.3V19h-3v-1.5h-3V19H8v-2.2A6 6 0 0 1 4 12z"/><circle cx="15.5" cy="10.5" r=".6"/>'
 };
 function ic(k){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(P[k]||P.otros)+'</svg>'}
-var HUES={mercado:150,transporte:205,comida:24,vivienda:265,servicios:42,salud:350,ocio:300,ropa:185,deudas:228,otros:320,sueldo:150,comision:168,otro:200,ok:158};
+var HUES={mercado:150,transporte:205,comida:24,vivienda:265,servicios:48,mascota:88,salud:350,ocio:300,ropa:185,deudas:228,regalos:330,otros:280,sueldo:150,comision:168,otro:200,ok:158};
 function tile(k){return '<span class="ico" style="--h:'+(HUES[k]!=null?HUES[k]:320)+'">'+ic(k)+'</span>'}
 function nm(w){var n=(S.cfg&&S.cfg.nombres)||{};return w==='esp'?(n.esp||'Mi pareja'):(n.yo||'Yo')}
 function isSolo(){return !!S.cfg&&S.cfg.modo==='solo'}
@@ -925,7 +986,7 @@ function startJoin(code){
     if(!r.data){toast('Ese enlace de invitación no es válido.');return goOwn()}
     var inv=S.inv=r.data;
     $('#jn-title').textContent=inv.yo?inv.yo+' te invita a llevar las cuentas juntos':'Te invitaron a llevar las cuentas juntos';
-    $('#jn-nombre').value=inv.esp&&inv.esp!=='Mi pareja'?inv.esp:'';$('#jn-sueldo').value='';
+    $('#jn-nombre').value=inv.esp&&inv.esp!=='Mi pareja'?inv.esp:'';$('#jn-sueldo').value='';$('#jn-extra').value='';
     setMsg('#jn-msg','');$('#jn-warn').hidden=true;
     if(!S.own){showView('join');return}
     return sb.from('docs').select('id').eq('hogar_id',S.own.id).then(function(d){
@@ -934,7 +995,7 @@ function startJoin(code){
   });
 }
 function doJoin(){
-  var nombre=$('#jn-nombre').value.trim().slice(0,14),sueldo=digits($('#jn-sueldo').value);
+  var nombre=$('#jn-nombre').value.trim().slice(0,14),sueldo=digits($('#jn-sueldo').value),extra=digits($('#jn-extra').value);
   setMsg('#jn-msg','');
   if(!nombre){setMsg('#jn-msg','Escribe tu nombre para unirte.');$('#jn-nombre').focus();return}
   $('#jn-go').disabled=true;
@@ -942,7 +1003,7 @@ function doJoin(){
     if(r.error)throw r.error;
     clearInvite();S.joinCode='';showView('loading');
     return openHogar(r.data).then(function(){
-      saveCfg(function(c){c.modo='pareja';c.nombres=c.nombres||{};c.nombres.yo=c.nombres.yo||'';c.nombres.esp=nombre;if(sueldo)c.sueldoEsp=sueldo});
+      saveCfg(function(c){c.modo='pareja';c.nombres=c.nombres||{};c.nombres.yo=c.nombres.yo||'';c.nombres.esp=nombre;if(sueldo)c.sueldoEsp=sueldo;if(extra)c.extraEsp=extra});
       toast('Listo, '+nombre+'. Ya comparten las cuentas.');
     });
   }).catch(function(e){showView('join');setMsg('#jn-msg',errText(e))}).then(function(){$('#jn-go').disabled=false});
@@ -1003,10 +1064,12 @@ function curSm(){return summarize(S.qs[S.cur]||{},S.cfg,S.cur,TODAY)}
 /* ---------- Pintado ---------- */
 function render(){
   var sm=curSm();
-  applyNames();renderInvite();renderTop(sm);renderHero(sm);renderFijos(sm);renderGastos(sm);renderIngresos(sm);renderAhorro(sm);
+  applyNames();renderInvite();renderTop(sm);renderHero(sm);renderFijos(sm);renderGastos(sm);renderPpto(sm);renderIngresos(sm);renderAhorro(sm);
   var anyIng=Object.keys(S.qs).some(function(id){return vals(S.qs[id].ing).length>0});
   var c=S.cfg||{};
-  $('#onboard').hidden=!(S.ready&&!S.readonly&&!c.listo&&!c.sueldo&&!anyIng);
+  if(S.ready&&!S.readonly&&!c.listo&&!c.sueldo&&!anyIng&&!S.wzOpen&&!S.wzAuto){S.wzAuto=true;openWizard()}
+  $('#wiz').hidden=!S.wzOpen;document.body.classList.toggle('wiz-on',!!S.wzOpen);
+  $('#arma').hidden=!(S.ready&&!S.readonly&&c.listo&&!c.armado&&!S.wzOpen);
   var off=!S.ready||S.readonly;
   ['#gas-submit','#ing-submit','#cfg-save','#obl-submit'].forEach(function(s){$(s).disabled=off});
 }
@@ -1087,7 +1150,7 @@ function renderFijos(sm){
         (isSolo()?'':'<div class="seg two-opt"><label class="chip"><input type="radio" name="pay-w" id="pay-w-yo" value="yo"'+(w!=='esp'?' checked':'')+'><span>Pagó '+esc(nm('yo'))+'</span></label><label class="chip"><input type="radio" name="pay-w" id="pay-w-esp" value="esp"'+(w==='esp'?' checked':'')+'><span>Pagó '+esc(nm('esp'))+'</span></label></div>')+
         '<div class="actions"><button class="btn primary small" type="button" data-act="pay-ok">Marcar como pagada</button><button class="btn small" type="button" data-act="pay-no">Cancelar</button></div></div></li>';
     }
-    var meta=['Pendiente'].concat(obMeta(ob)).join(' · ');
+    var meta=['Pendiente'].concat(obMeta(ob)).concat(!isSolo()&&ob.w==='juntos'?['entre los dos']:[]).join(' · ');
     return '<li class="mov">'+tile(ob.c)+'<div class="t"><strong>'+esc(ob.n)+'</strong><small>'+meta+(Number(ob.cada)===2?' · <button class="link" type="button" data-act="ob-off" data-id="'+esc(ob.id)+'">este mes no toca</button>':'')+'</small></div><span class="amt">'+money(ob.m)+'</span><button class="btn small primary" type="button" data-act="pay" data-id="'+esc(ob.id)+'">Pagar</button></li>';
   });
   rows.push('<li class="mov">'+tile('otros')+'<div class="t"><strong>Gastos extra</strong><small>'+(sm.nExtras?sm.nExtras+(sm.nExtras===1?' gasto anotado':' gastos anotados'):'Lo del día a día: mercado, salidas, imprevistos')+'</small></div><span class="amt">'+money(sm.extras)+'</span><button class="btn small" type="button" data-act="go-gas">Anotar</button></li>');
@@ -1104,7 +1167,7 @@ function renderFijos(sm){
     var arr=all.filter(function(o){return (Number(o.q)||0)===g[0]});if(!arr.length)return '';
     var tot=arr.reduce(function(s,o){return s+o.m},0);
     return '<div class="day"><div class="day-h"><span>'+g[1]+'</span><span class="num">'+money(tot)+'</span></div><ul class="movs">'+arr.map(function(o){
-      var sub=[CATN[o.c]||'Otros'].concat(obMeta(o)).concat(isSolo()?[]:['suele pagar '+esc(nm(o.w))]).join(' · ');
+      var sub=[CATN[o.c]||'Otros'].concat(obMeta(o)).concat(isSolo()?[]:[o.w==='juntos'?'entre los dos':'la paga '+esc(nm(o.w))]).join(' · ');
       return '<li class="mov">'+tile(o.c)+'<div class="t"><strong>'+esc(o.n)+'</strong><small>'+sub+'</small></div><span class="amt">'+money(o.m)+'</span>'+opsHtml('ob',esc(o.id))+'</li>';
     }).join('')+'</ul></div>';
   }).join(''):'<div class="empty"><strong>Aún no tienes obligaciones guardadas</strong>Agrega arriendo, servicios o cuotas y aparecerán solas cada quincena.</div>';
@@ -1155,10 +1218,12 @@ function renderIngresos(sm){
       var s=Number(w==='yo'?c.sueldo:c.sueldoEsp)||0;
       var has=sm.ings.some(function(x){return x.k==='sueldo'&&(x.w==='esp'?'esp':'yo')===w});
       if(s>0&&!has)btns+='<button class="btn small primary" type="button" data-act="quick-sueldo" data-w="'+w+'">'+(named()?'Sueldo de '+esc(nm(w)):(w==='yo'?'Mi sueldo':'Sueldo de mi pareja'))+' '+money(s)+'</button>';
+      var x=Number(w==='yo'?c.extraYo:c.extraEsp)||0,hasX=sm.ings.some(function(i){return i.k!=='sueldo'&&(i.w==='esp'?'esp':'yo')===w});
+      if(x>0&&!hasX)btns+='<button class="btn small" type="button" data-act="quick-extra" data-w="'+w+'">Extra'+(isSolo()?'':' de '+esc(nm(w)))+' '+money(x)+'</button>';
     });
   }
   qs.hidden=!btns;
-  if(btns)qs.innerHTML='<p>Sueldo de esta quincena sin anotar:</p><div>'+btns+'</div>';
+  if(btns)qs.innerHTML='<p>Ingresos de siempre sin anotar en esta quincena:</p><div>'+btns+'</div>';
 }
 function renderAhorro(sm){
   var closed=0,nClosed=0;
@@ -1234,7 +1299,7 @@ function startObEdit(id){
   var o=S.cfg&&S.cfg.obls&&S.cfg.obls[id];if(!o)return;
   S.obEdit=id;S.confirm=null;
   $('#obl-nombre').value=o.n;$('#obl-monto').value=Number(o.m).toLocaleString('es-CO');$('#obl-q').value=String(Number(o.q)||0);
-  $('#obl-cada').value=Number(o.cada)===2?'2':'1';$('#obl-cat').value=CATN[o.c]?o.c:'otros';$('#obl-w').value=o.w==='esp'?'esp':'yo';$('#obl-aprox').checked=!!o.aprox;
+  $('#obl-cada').value=Number(o.cada)===2?'2':'1';$('#obl-cat').value=CATN[o.c]?o.c:'otros';$('#obl-w').value=o.w==='esp'||o.w==='juntos'?o.w:'yo';$('#obl-aprox').checked=!!o.aprox;
   $('#ob-title').textContent='Editar obligación';$('#obl-submit').textContent='Guardar cambios';$('#obl-cancel').hidden=false;
   render();$('#f-ob').scrollIntoView({block:'center'});$('#obl-nombre').focus();
 }
@@ -1244,7 +1309,7 @@ function submitOb(){
   if(!n){toast('Ponle un nombre a la obligación.');$('#obl-nombre').focus();return}
   if(!m){toast('Escribe el valor de la obligación.');$('#obl-monto').focus();return}
   var editing=S.obEdit,id=editing||('o'+uid()),cada=Number($('#obl-cada').value)===2?2:1,mi=monthIdx(qRange(S.cur));
-  var q=Number($('#obl-q').value)||0,cat=$('#obl-cat').value,w=!isSolo()&&$('#obl-w').value==='esp'?'esp':'yo',aprox=$('#obl-aprox').checked;
+  var q=Number($('#obl-q').value)||0,cat=$('#obl-cat').value,w=isSolo()?'yo':($('#obl-w').value==='esp'||$('#obl-w').value==='juntos'?$('#obl-w').value:'yo'),aprox=$('#obl-aprox').checked;
   saveCfg(function(c){
     c.obls=c.obls||{};var old=c.obls[id]||{};
     c.obls[id]={n:n,m:m,q:q,cada:cada,c:cat,w:w,aprox:aprox,o:old.o||Date.now()};
@@ -1273,6 +1338,188 @@ function cfgMode(){
   $('#cfg-pre').textContent=fijo?'$':'%';
 }
 
+
+/* ---------- Asistente: organizar la plata ---------- */
+var FIJOS_P=[['arriendo','Arriendo o casa','vivienda','juntos'],['luz','Luz','servicios','juntos',1],['agua','Agua','servicios','juntos',1],['gas','Gas','servicios','juntos',1],['internet','Internet de la casa','servicios','juntos'],['cel-yo','Celular de {yo}','servicios','yo'],['cel-esp','Celular de {esp}','servicios','esp'],['deudas','Deudas y créditos','deudas','juntos']];
+var PPTO_P=[['comida','Comida'],['mascota','Mascota'],['transporte','Transporte y gasolina'],['ocio','Salidas y gustos'],['ropa','Ropa y cuidado personal'],['salud','Salud'],['regalos','Regalos y fechas especiales'],['otros','Imprevistos']];
+var PPTON={};PPTO_P.forEach(function(x){PPTON[x[0]]=x[1]});
+function soyW(){return typeof soy==='function'?soy():'yo'}
+function otro(w){return w==='esp'?'yo':'esp'}
+function wzName(w){var el=$('#wz-n-'+(w===soyW()?'me':'ot'));var v=el&&el.value.trim();return v||(w==='yo'?'Yo':'Mi pareja')}
+function wzSolo(){return checked('wz-modo')==='solo'}
+function whoOpts(id,sel){
+  return '<select class="w-w" id="'+id+'" aria-label="Quién paga"><option value="juntos"'+(sel==='juntos'?' selected':'')+'>Entre los dos</option><option value="yo" data-wzn="yo"'+(sel==='yo'?' selected':'')+'></option><option value="esp" data-wzn="esp"'+(sel==='esp'?' selected':'')+'></option></select>';
+}
+function qOpts(id,sel){
+  sel=String(sel);
+  return '<select class="w-q" id="'+id+'" aria-label="Quincena"><option value="1"'+(sel==='1'?' selected':'')+'>1ª quincena</option><option value="2"'+(sel==='2'?' selected':'')+'>2ª quincena</option><option value="0"'+(sel==='0'?' selected':'')+'>Las dos</option></select>';
+}
+function fmtV(v){return v?Number(v).toLocaleString('es-CO'):''}
+function wzFijoRow(k,label,cat,o,custom,idx){
+  var base='wz-f-'+(custom?'c'+idx:k);
+  var name=custom?'<input type="text" id="'+base+'-n" class="w-n" maxlength="40" placeholder="¿Qué es?" value="'+esc(o.n||'')+'">':'<span data-wzlabel="'+esc(label)+'">'+esc(label)+'</span>';
+  return '<div class="wrow" data-key="'+(custom?'':k)+'" data-c="'+cat+'"'+(k==='cel-esp'?' data-wz-par':'')+'><div class="wname">'+tile(cat)+name+'</div>'+
+    '<div class="moneybox"><b>$</b><input type="text" id="'+base+'-m" class="w-m" inputmode="numeric" autocomplete="off" data-money placeholder="0" value="'+fmtV(o.m)+'" aria-label="Valor"></div>'+
+    qOpts(base+'-q',o.q!=null?o.q:1)+whoOpts(base+'-w',o.w||'juntos')+'</div>';
+}
+function wzPptoRow(k,label,o){
+  var base='wz-p-'+k;
+  return '<div class="wrow" data-c="'+k+'"><div class="wname">'+tile(k)+'<span>'+esc(label)+'</span></div>'+
+    '<div class="moneybox"><b>$</b><input type="text" id="'+base+'-m" class="w-m" inputmode="numeric" autocomplete="off" data-money placeholder="0" value="'+fmtV(o.m)+'" aria-label="Cuánto por quincena"></div>'+
+    whoOpts(base+'-w',o.w||'juntos')+'</div>';
+}
+function openWizard(){
+  if(!S.ready||S.readonly)return;
+  closeSettings();
+  var c=S.cfg||{},n=c.nombres||{},me=soyW(),ot=otro(me);
+  var sue={yo:c.sueldo,esp:c.sueldoEsp},ext={yo:c.extraYo,esp:c.extraEsp};
+  var obls=(c.obls)||{},pp=c.ppto||{},pareja=c.modo==='pareja'||(!c.listo);
+  var person=function(w,pfx,title,hint){
+    return '<div class="person"'+(pfx==='ot'?' data-wz-par':'')+'><strong>'+title+'</strong><div class="grid3">'+
+      '<label class="field"><span>Nombre</span><input type="text" id="wz-n-'+pfx+'" maxlength="14" autocomplete="off" placeholder="'+(pfx==='me'?'Tu nombre':'Su nombre')+'" value="'+esc(n[w]&&n[w]!=='Mi pareja'?n[w]:'')+'"></label>'+
+      '<label class="field"><span>Sueldo normal por quincena</span><div class="moneybox"><b>$</b><input type="text" id="wz-s-'+pfx+'" inputmode="numeric" autocomplete="off" data-money placeholder="0" value="'+fmtV(sue[w])+'"></div></label>'+
+      '<label class="field"><span>Extra en la quincena (si hay)</span><div class="moneybox"><b>$</b><input type="text" id="wz-x-'+pfx+'" inputmode="numeric" autocomplete="off" data-money placeholder="0" value="'+fmtV(ext[w])+'"></div></label>'+
+      '</div>'+(hint?'<p class="hint">'+hint+'</p>':'')+'</div>';
+  };
+  var custom=Object.keys(obls).filter(function(k){return !FIJOS_P.some(function(f){return f[0]===k})}).map(function(k){return Object.assign({id:k},obls[k])}).sort(function(a,b){return (a.o||0)-(b.o||0)});
+  var html=
+  '<div class="wiz-pane" data-step="1"><h3>¿Quiénes son y cuánto ganan?</h3><p>Con esto la app calcula cuánto pueden gastar cada quincena. El extra es lo que suele entrar además del sueldo: comisiones, horas extra, ventas. Pon un promedio.</p>'+
+    '<fieldset><legend>¿Cómo la van a usar?</legend><div class="seg two-opt"><label class="chip"><input type="radio" name="wz-modo" id="wz-modo-solo" value="solo"'+(pareja?'':' checked')+'><span>Por mi cuenta</span></label><label class="chip"><input type="radio" name="wz-modo" id="wz-modo-par" value="pareja"'+(pareja?' checked':'')+'><span>En pareja</span></label></div></fieldset>'+
+    person(me,'me','Tus datos','')+
+    person(ot,'ot','Tu pareja','Si no sabes sus datos, déjalos vacíos: tu pareja los llena cuando entre con la invitación.')+
+  '</div>'+
+  '<div class="wiz-pane" data-step="2" hidden><h3>Gastos fijos de cada mes</h3><p>Pon el valor de lo que pagan sí o sí, en qué quincena se paga y si lo pagan entre los dos o cada uno. Deja en blanco lo que no aplique.</p>'+
+    '<div class="wrows"><div class="whead"><span>Gasto</span><span>Valor</span><span>Quincena</span><span class="w-w">¿Quién paga?</span></div>'+
+    FIJOS_P.map(function(f){var o=obls[f[0]]||{};return wzFijoRow(f[0],f[1],f[2],{m:o.m,q:o.q,w:o.w||f[3]})}).join('')+
+    '<div id="wz-custom">'+custom.map(function(o,i){return wzFijoRow('',o.n,o.c||'otros',o,true,'e'+i).replace('class="wrow"','class="wrow" data-id="'+esc(o.id)+'"')}).join('')+'</div>'+
+    '</div><button class="btn small" type="button" id="wz-add">+ Agregar otro gasto fijo</button></div>'+
+  '<div class="wiz-pane" data-step="3" hidden><h3>¿Cuánto piensan gastar por quincena?</h3><p>Es un presupuesto para lo que no es un recibo fijo: comida, mascota, salidas. La app les muestra cuánto llevan gastado de cada uno. Deja en blanco lo que no usen.</p>'+
+    '<div class="wrows ppto"><div class="whead"><span>En qué</span><span>Por quincena</span><span class="w-w">¿De quién?</span></div>'+
+    PPTO_P.map(function(x){var o=pp[x[0]]||{};return wzPptoRow(x[0],x[1],o)}).join('')+'</div></div>'+
+  '<div class="wiz-pane" data-step="4" hidden><h3>Ahorro y resumen</h3><p>Así queda una quincena normal con lo que pusieron. Revisen que les quede plata libre.</p>'+
+    (c.metaTipo==='monto'?'<p class="hint">Meta de ahorro: '+money(c.metaValor)+' fijos por quincena. Se cambia en Ajustes.</p>':'<label class="field" style="max-width:260px"><span>Ahorro (% de lo que entra)</span><div class="moneybox"><input type="text" id="wz-meta" inputmode="numeric" autocomplete="off" maxlength="2" value="'+(c.metaValor!=null?c.metaValor:10)+'"><b>%</b></div></label>')+
+    '<div class="wsum" id="wz-sum"></div></div>';
+  $('#wiz-body').innerHTML=html;
+  S.wzOpen=true;S.wzStep=1;S.wzCustom=custom.length;
+  $('#wiz').classList.toggle('solo',!pareja);
+  wzShow();render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function wzNames(){
+  var y=wzName('yo'),e=wzName('esp'),solo=wzSolo();
+  document.querySelectorAll('#wiz [data-wzn]').forEach(function(o){o.textContent=o.dataset.wzn==='yo'?y:e});
+  document.querySelectorAll('#wiz [data-wzlabel]').forEach(function(el){
+    var t=el.dataset.wzlabel;
+    if(solo&&t.indexOf('{yo}')>=0)t='Plan de celular';
+    el.textContent=t.replace('{yo}',y).replace('{esp}',e);
+  });
+}
+function wzShow(){
+  var st=S.wzStep;
+  document.querySelectorAll('#wiz .wiz-pane').forEach(function(p){p.hidden=Number(p.dataset.step)!==st});
+  document.querySelectorAll('#wiz .wiz-steps i').forEach(function(i,k){i.classList.toggle('on',k<st)});
+  $('#wiz-kicker').textContent='Organicemos la plata · paso '+st+' de 4';
+  $('#wiz-back').hidden=st===1;
+  $('#wiz-next').textContent=st===4?'Guardar y empezar':'Siguiente';
+  $('#wiz-close').hidden=!(S.cfg&&S.cfg.listo);
+  wzNames();
+  if(st===4)wzSummary();
+}
+function wzRows(sel){
+  return Array.prototype.slice.call(document.querySelectorAll(sel+' .wrow')).map(function(r){
+    var g=function(c){var el=r.querySelector(c);return el?el.value:''};
+    var nEl=r.querySelector('.w-n'),lab=r.querySelector('[data-wzlabel]');
+    return {key:r.dataset.key||'',id:r.dataset.id||'',c:r.dataset.c,n:nEl?nEl.value.trim().slice(0,40):(lab?lab.textContent:''),m:digits(g('.w-m')),q:Number(g('.w-q'))||0,w:g('.w-w')||'juntos',par:r.hasAttribute('data-wz-par')};
+  });
+}
+function wzSummary(){
+  var solo=wzSolo(),ing=digits($('#wz-s-me').value)+digits($('#wz-x-me').value)+(solo?0:digits($('#wz-s-ot').value)+digits($('#wz-x-ot').value));
+  var fq={1:0,2:0},pp=0;
+  wzRows('#wiz [data-step="2"]').forEach(function(r){if(!r.m||(solo&&r.par))return;if(r.q===1||r.q===2)fq[r.q]+=r.m;else{fq[1]+=r.m;fq[2]+=r.m}});
+  wzRows('#wiz [data-step="3"]').forEach(function(r){pp+=r.m});
+  var c=S.cfg||{},metaIn=$('#wz-meta'),pct=metaIn?Math.min(99,digits(metaIn.value)):null;
+  var meta=pct!=null?Math.round(ing*pct/100):Math.min(Number(c.metaValor)||0,ing);
+  var col=function(q){var libre=ing-fq[q]-pp-meta;return {f:fq[q],l:libre}};
+  var a=col(1),b=col(2);
+  var row=function(t,x,y,cls){return '<tr'+(cls?' class="'+cls+'"':'')+'><td>'+t+'</td><td>'+x+'</td><td>'+y+'</td></tr>'};
+  $('#wz-sum').innerHTML='<table><thead><tr><th>Por quincena</th><th>1ª · 1–15</th><th>2ª · 16–fin</th></tr></thead><tbody>'+
+    row('Entra (sueldos y extras)',money(ing),money(ing))+
+    row('Gastos fijos','−'+money(a.f),'−'+money(b.f))+
+    row('Presupuestos','−'+money(pp),'−'+money(pp))+
+    row('Ahorro','−'+money(meta),'−'+money(meta))+
+    row('Queda libre',money(a.l),money(b.l),'tot')+'</tbody></table>'+
+    (!solo&&!digits($('#wz-s-ot').value)?'<p class="hint" style="margin-top:10px">Todavía falta lo que gana '+esc(wzName(otro(soyW())))+'. Cuando lo llene, el resumen se completa.</p>':'')+
+    (a.l<0||b.l<0?'<p class="msg warn" style="margin-top:10px">En alguna quincena sale más de lo que entra. Bajen presupuestos o el ahorro, o pasen algún pago fijo a la otra quincena.</p>':(ing===0?'<p class="hint" style="margin-top:10px">Sin ingresos todavía: complétenlos en el paso 1 para ver el resumen.</p>':''));
+}
+function wzNext(){
+  var st=S.wzStep;
+  if(st===1&&!$('#wz-n-me').value.trim()){toast('Escribe tu nombre para seguir.');$('#wz-n-me').focus();return}
+  if(st<4){S.wzStep++;wzShow();$('#wiz').scrollIntoView({block:'start',behavior:'smooth'});return}
+  wzSave();
+}
+function wzSave(){
+  var me=soyW(),ot=otro(me),solo=wzSolo(),was=!!(S.cfg&&S.cfg.listo);
+  var nMe=$('#wz-n-me').value.trim().slice(0,14),nOt=$('#wz-n-ot').value.trim().slice(0,14);
+  var sMe=digits($('#wz-s-me').value),xMe=digits($('#wz-x-me').value),sOt=digits($('#wz-s-ot').value),xOt=digits($('#wz-x-ot').value);
+  var fijos=wzRows('#wiz [data-step="2"]'),ppto=wzRows('#wiz [data-step="3"]'),metaIn=$('#wz-meta');
+  saveCfg(function(c){
+    var nn=c.nombres||{};nn[me]=nMe;if(!solo)nn[ot]=nOt||nn[ot]||'Mi pareja';c.nombres=nn;
+    c.modo=solo?'solo':'pareja';
+    var setI=function(w,sv,xv){if(w==='yo'){c.sueldo=sv;c.extraYo=xv}else{c.sueldoEsp=sv;c.extraEsp=xv}};
+    setI(me,sMe,xMe);if(!solo&&(sOt||xOt||!was))setI(ot,sOt,xOt);
+    if(metaIn){c.metaTipo='pct';c.metaValor=Math.min(99,digits(metaIn.value))}
+    c.obls=c.obls||{};var ord=1;
+    fijos.forEach(function(r){
+      var w=solo?'yo':r.w;
+      if(r.key){
+        var old=c.obls[r.key]||{},pre=FIJOS_P.filter(function(f){return f[0]===r.key})[0];
+        if(!r.m||(solo&&r.par)){delete c.obls[r.key];return}
+        c.obls[r.key]={n:r.n||old.n,m:r.m,q:r.q,cada:Number(old.cada)===2?2:1,c:r.c,w:w,aprox:old.aprox!=null?!!old.aprox:!!(pre&&pre[4]),o:old.o||ord};
+        if(old.ref!=null)c.obls[r.key].ref=old.ref;
+      }else if(r.id){
+        if(!r.m||!r.n){delete c.obls[r.id];return}
+        var o2=c.obls[r.id]||{};c.obls[r.id]=Object.assign({},o2,{n:r.n,m:r.m,q:r.q,w:w});
+      }else if(r.m&&r.n){
+        c.obls['o'+uid()]={n:r.n,m:r.m,q:r.q,cada:1,c:'otros',w:w,aprox:false,o:Date.now()};
+      }
+      ord++;
+    });
+    var pp={};ppto.forEach(function(r){if(r.m)pp[r.c]={m:r.m,w:solo?'yo':r.w}});c.ppto=pp;
+    c.listo=true;c.armado=true;
+  });
+  if(!was){
+    var hoy=qidOf(TODAY),q=S.qs[hoy]||{},has=function(w){return vals(q.ing).some(function(i){return i.k==='sueldo'&&(i.w==='esp'?'esp':'yo')===w})};
+    S.cur=hoy;
+    if(sMe&&!has(me))commit({t:'item',qid:hoy,kind:'ing',id:uid(),val:{m:sMe,k:'sueldo',d:TODAY,n:'',w:me,t:Date.now()}});
+    if(!solo&&sOt&&!has(ot))commit({t:'item',qid:hoy,kind:'ing',id:uid(),val:{m:sOt,k:'sueldo',d:TODAY,n:'',w:ot,t:Date.now()+1}});
+  }
+  S.wzOpen=false;render();setTab('fijos');window.scrollTo({top:0,behavior:'smooth'});
+  toast(was?'Cambios guardados':'Listo, '+nMe+'. Ya está organizada la plata.');
+}
+function pptoOf(cfg){
+  var o=cfg&&cfg.ppto||{},keys=PPTO_P.map(function(x){return x[0]});
+  Object.keys(o).forEach(function(k){if(keys.indexOf(k)<0)keys.push(k)});
+  return keys.filter(function(k){return o[k]&&o[k].m>0}).map(function(k){return {c:k,m:o[k].m,w:o[k].w||'juntos'}});
+}
+function renderPpto(sm){
+  var list=pptoOf(S.cfg),tp=0,tg=0;
+  if(!list.length){
+    $('#ppto-aside').textContent='';
+    $('#ppto-list').innerHTML='<div class="empty"><strong>Sin presupuestos todavía</strong>Definan cuánto piensan gastar en comida, mascota y más.<div style="margin-top:10px"><button class="btn small primary" type="button" data-act="wiz">Organizar la plata</button></div></div>';
+    return;
+  }
+  $('#ppto-list').innerHTML='<div class="cats">'+list.map(function(p){
+    var g=sm.gass.filter(function(x){return !x.ob&&x.c===p.c&&(isSolo()||p.w==='juntos'||(x.w==='esp'?'esp':'yo')===p.w)}).reduce(function(s,x){return s+x.m},0);
+    tp+=p.m;tg+=g;
+    var pct=g/p.m,cls=pct>1?'over':(pct>=.8?'warn':'ok'),left=p.m-g;
+    var who=isSolo()?'':(p.w==='juntos'?' · entre los dos':' · '+whoTag(p.w));
+    return '<div class="cat">'+tile(p.c)+'<div><div class="nm"><span>'+(PPTON[p.c]||CATN[p.c]||'Otros')+'</span><small class="num">'+money(g)+' de '+money(p.m)+'</small></div>'+
+      '<div class="track" role="img" aria-label="'+Math.round(pct*100)+' % usado"><span class="'+cls+'" style="width:'+Math.min(100,pct*100).toFixed(1)+'%"></span></div>'+
+      '<div class="pp-sub">'+(left>=0?'Quedan '+money(left):'Se pasaron por '+money(-left))+who+'</div></div></div>';
+  }).join('')+'</div>';
+  $('#ppto-aside').textContent=money(tg)+' de '+money(tp);
+}
+
 /* ---------- Eventos ---------- */
 $('#gas-cats').innerHTML=CATS.map(function(c,i){return '<label class="chip"><input type="radio" name="cat" id="cat-'+c[0]+'" value="'+c[0]+'"'+(i===0?' checked':'')+'><span>'+ic(c[0])+c[1]+'</span></label>'}).join('');
 $('#ing-tipos').innerHTML=TIPOS.map(function(c,i){return '<label class="chip"><input type="radio" name="tipo" id="tipo-'+c[0]+'" value="'+c[0]+'"'+(i===0?' checked':'')+'><span>'+c[1]+'</span></label>'}).join('');
@@ -1282,12 +1529,12 @@ document.addEventListener('input',function(e){
   if(t.matches&&t.matches('[data-money]'))fmtMoneyInput(t);
   if(t.id==='pay-monto'&&S.pay)S.pay.m=digits(t.value);
   if(t.id==='cfg-valor'){if($('#cfg-fijo').checked)fmtMoneyInput(t);else t.value=String(Math.min(100,digits(t.value))||'')}
-  if(t.id==='ob-meta')t.value=String(Math.min(99,digits(t.value))||'');
+  if(t.id==='wz-meta')t.value=String(Math.min(99,digits(t.value))||'');
 });
 document.addEventListener('change',function(e){
   if(e.target.name==='cfg-tipo'){$('#cfg-valor').value='';cfgMode()}
   if(e.target.name==='cfg-modo')showPar('data-cfg-par',e.target.value!=='solo');
-  if(e.target.name==='ob-modo')showPar('data-ob-par',e.target.value!=='solo');
+  if(e.target.name==='wz-modo'){$('#wiz').classList.toggle('solo',e.target.value==='solo');wzNames()}
   if(e.target.name==='pay-w'&&S.pay)S.pay.w=e.target.value;
 });
 $('#f-gas').addEventListener('submit',function(e){e.preventDefault();submitMov('gas')});
@@ -1301,6 +1548,17 @@ $('#q-next').addEventListener('click',function(){goQ(qShift(S.cur,1))});
 $('#q-today').addEventListener('click',function(){goQ(qidOf(TODAY))});
 $('#btn-settings').addEventListener('click',openSettings);
 $('#cfg-cancel').addEventListener('click',closeSettings);
+$('#wiz-next').addEventListener('click',wzNext);
+$('#wiz-back').addEventListener('click',function(){if(S.wzStep>1){S.wzStep--;wzShow()}});
+$('#wiz-close').addEventListener('click',function(){S.wzOpen=false;render()});
+document.addEventListener('click',function(e){
+  if(e.target&&e.target.id==='wz-add'){
+    var i=(S.wzCustom=(S.wzCustom||0)+1);
+    $('#wz-custom').insertAdjacentHTML('beforeend',wzFijoRow('','','otros',{q:1,w:'juntos'},true,'n'+i));wzNames();
+    var el=$('#wz-f-cn'+i+'-n');if(el)el.focus();
+  }
+});
+document.addEventListener('input',function(e){if(e.target.id==='wz-n-me'||e.target.id==='wz-n-ot')wzNames()});
 $('#f-cfg').addEventListener('submit',function(e){
   e.preventDefault();if(!S.ready||S.readonly)return;
   var fijo=$('#cfg-fijo').checked,s1=digits($('#cfg-sueldo').value),s2=digits($('#cfg-sueldo-esp').value),v=digits($('#cfg-valor').value);
@@ -1309,18 +1567,6 @@ $('#f-cfg').addEventListener('submit',function(e){
     var on=c.nombres||{};c.modo=modo;c.nombres={yo:n1||on.yo||'',esp:n2||on.esp||''};c.sueldo=s1;c.sueldoEsp=s2;c.metaTipo=fijo?'monto':'pct';c.metaValor=fijo?v:Math.min(100,v);c.listo=true;
   });
   closeSettings();toast('Ajustes guardados');
-});
-$('#onboard').addEventListener('submit',function(e){
-  e.preventDefault();if(!S.ready||S.readonly)return;
-  var nombre=$('#ob-nombre').value.trim().slice(0,14),modo=checked('ob-modo')==='pareja'?'pareja':'solo';
-  var pareja=modo==='pareja'?($('#ob-nombre-esp').value.trim().slice(0,14)||'Mi pareja'):'';
-  var sueldo=digits($('#ob-sueldo').value),esp=modo==='pareja'?digits($('#ob-sueldo-esp').value):0,meta=Math.min(99,digits($('#ob-meta').value));
-  if(!nombre){toast('Escribe tu nombre para empezar.');$('#ob-nombre').focus();return}
-  saveCfg(function(c){c.modo=modo;c.nombres={yo:nombre,esp:pareja};c.sueldo=sueldo;c.sueldoEsp=esp;c.metaTipo='pct';c.metaValor=meta;c.listo=true});
-  var hoy=qidOf(TODAY);S.cur=hoy;
-  if(sueldo)commit({t:'item',qid:hoy,kind:'ing',id:uid(),val:{m:sueldo,k:'sueldo',d:TODAY,n:'',w:'yo',t:Date.now()}});
-  if(esp)commit({t:'item',qid:hoy,kind:'ing',id:uid(),val:{m:esp,k:'sueldo',d:TODAY,n:'',w:'esp',t:Date.now()+1}});
-  toast('Listo, '+nombre+'. Ya puedes anotar ingresos, pagos y gastos.');
 });
 var TABICO={fijos:'lista',gastos:'mercado',ingresos:'comision',ahorro:'piggy'};
 document.querySelectorAll('.tab').forEach(function(b){
@@ -1347,7 +1593,7 @@ document.addEventListener('click',function(e){
   else if(a==='pay'){
     if(!S.ready||S.readonly)return;
     sm=curSm();var ob=sm.obls.filter(function(o){return o.id===id})[0];if(!ob)return;
-    S.pay={id:id,m:ob.m,w:!isSolo()&&ob.w==='esp'?'esp':'yo'};render();
+    S.pay={id:id,m:ob.m,w:isSolo()?'yo':(ob.w==='esp'?'esp':(ob.w==='juntos'?soyW():'yo'))};render();
     var el=$('#pay-monto');if(el){el.focus();try{el.select()}catch(err){}}
   }
   else if(a==='pay-no'){S.pay=null;render()}
@@ -1363,6 +1609,11 @@ document.addEventListener('click',function(e){
   else if(a==='ob-on'||a==='ob-off'){
     var mi=monthIdx(qRange(S.cur));
     saveCfg(function(c){if(c.obls&&c.obls[id])c.obls[id].ref=a==='ob-on'?mi:mi+1});
+  }
+  else if(a==='wiz')openWizard();
+  else if(a==='quick-extra'){
+    var wx=b.dataset.w==='esp'?'esp':'yo',cx=S.cfg||{},vx=Number(wx==='yo'?cx.extraYo:cx.extraEsp)||0;if(!vx)return;
+    commit({t:'item',qid:S.cur,kind:'ing',id:uid(),val:{m:vx,k:'otro',d:defDate(),n:'Ingreso extra',w:wx,t:Date.now()}});toast('Ingreso extra registrado');
   }
   else if(a==='quick-sueldo'){
     var w=b.dataset.w==='esp'?'esp':'yo',c=S.cfg||{},s=Number(w==='yo'?c.sueldo:c.sueldoEsp)||0;if(!s)return;
