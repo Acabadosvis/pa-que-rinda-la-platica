@@ -847,6 +847,8 @@ function checked(name){var el=document.querySelector('input[name="'+name+'"]:che
 function setRadio(name,v){var el=document.querySelector('input[name="'+name+'"][value="'+v+'"]');if(el)el.checked=true}
 
 var TODAY=ymd(new Date());
+function refreshToday(){var t=ymd(new Date());if(t===TODAY)return;var was=qidOf(TODAY);TODAY=t;if(S.cur===was)S.cur=qidOf(t);if(S.ready){syncForms(true);render()}}
+document.addEventListener('visibilitychange',function(){if(!document.hidden)refreshToday()});window.addEventListener('focus',refreshToday);setInterval(refreshToday,60000);
 var S={cfg:null,qs:{},cur:qidOf(TODAY),tab:'fijos',ready:false,mode:'loading',confirm:null,edit:null,obEdit:null,pay:null,selDay:null,readonly:false};
 var store={col:null,exists:{},base:{cfg:null,qs:{}},pending:[],chain:Promise.resolve()};
 var LS='mi-quincena:v1';
@@ -1346,7 +1348,7 @@ function renderCheckin(){
   if(!qs.length){el.hidden=true;el.innerHTML='';return}
   var dd=Number(TODAY.slice(8));
   var title=pt.payday?'¡Hoy es día de pago!':'¿Ya llegó la plata de esta quincena?';
-  el.innerHTML='<div class="ci-head">'+tile('sueldo')+'<div><strong>'+title+'</strong><small>Quincena del '+r.first+' al '+r.last+' de '+MESES[r.m-1]+(dd===15||pt.payday?'':'')+'</small></div></div><div class="ci-list">'+qs.join('')+'</div>';
+  el.innerHTML='<div class="ci-head">'+tile('sueldo')+'<div><strong>'+title+'</strong><small>'+(pt.payday?'Lo que confirmen se suma a la quincena del ':'Quincena del ')+r.first+' al '+r.last+' de '+MESES[r.m-1]+'</small></div></div><div class="ci-list">'+qs.join('')+'</div>';
   el.hidden=false;
 }
 function setIncome(qid,w,k,m){
@@ -1357,20 +1359,25 @@ function setIncome(qid,w,k,m){
   else{var t=st.tipo;val={m:m,k:t==='comision'?'comision':'otro',ex:true,d:d,n:m?(t==='comision'?'Comisiones':(t==='extra'?'Extra':'Comisiones o extras')):'No hubo '+(t==='comision'?'comisiones':'extra'),w:w,t:Date.now()}}
   commit({t:'item',qid:qid,kind:'ing',id:uid(),val:val});
 }
+/* Si lo confirmado es de otra quincena (día de pago), se muestra esa quincena para ver la suma */
+function ciDone(qid,msg){
+  if(S.cur!==qid){goQ(qid);window.scrollTo({top:0,behavior:'smooth'});toast(msg+' · sumado en '+qLabel(qid))}
+  else toast(msg);
+}
 function ciAction(a,b){
   if(!S.ready||S.readonly)return;
   var qid=b.dataset.qid,w=b.dataset.w==='esp'?'esp':'yo',k=b.dataset.k==='x'?'x':'s',where=b.dataset.where==='top'?'top':'tab';
   var who=isSolo()?'':' de '+nm(w);
-  if(a==='ci-yes'){var sv=incState(qid,w).sv;if(!sv)return;S.ci=null;setIncome(qid,w,'s',sv);toast('Sueldo'+who+' confirmado: '+money(sv))}
+  if(a==='ci-yes'){var sv=incState(qid,w).sv;if(!sv)return;S.ci=null;setIncome(qid,w,'s',sv);ciDone(qid,'Sueldo'+who+' confirmado: '+money(sv))}
   else if(a==='ci-edit'){S.ci={qid:qid,w:w,k:k,where:where};render();var el=$('#ci-m');if(el){el.focus();try{el.select()}catch(e){}}}
   else if(a==='ci-cancel'){S.ci=null;render()}
-  else if(a==='ci-none'){S.ci=null;setIncome(qid,w,'x',0);toast('Listo: sin '+(tipoOf(w)==='comision'?'comisiones':'extra')+' esta quincena')}
+  else if(a==='ci-none'){S.ci=null;setIncome(qid,w,'x',0);ciDone(qid,'Listo: sin '+(tipoOf(w)==='comision'?'comisiones':'extra')+' esta quincena')}
   else if(a==='ci-later'){setLater(qid,w,k);S.ci=null;render();toast('Te pregunto otra vez mañana')}
   else if(a==='ci-save'){
     var m=digits(($('#ci-m')||{}).value||'');
     if(!m&&k==='s'){toast('Escribe cuánto llegó.');$('#ci-m').focus();return}
     S.ci=null;setIncome(qid,w,k,m);
-    toast(k==='s'?'Sueldo'+who+' guardado: '+money(m):(m?xLabel(tipoOf(w))+who+': '+money(m):'Listo: no hubo esta quincena'));
+    ciDone(qid,k==='s'?'Sueldo'+who+' guardado: '+money(m):(m?xLabel(tipoOf(w))+who+': '+money(m):'Listo: no hubo esta quincena'));
   }
 }
 document.addEventListener('change',function(e){
