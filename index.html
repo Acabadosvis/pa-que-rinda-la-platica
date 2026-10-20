@@ -662,14 +662,14 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
     <div class="grid2"><label class="field"><span>Tu nombre</span><input type="text" id="cfg-n-yo" maxlength="14" autocomplete="off"></label><label class="field" data-cfg-par><span>Nombre de tu pareja</span><input type="text" id="cfg-n-esp" maxlength="14" autocomplete="off"></label></div>
     <label class="field"><span>Sueldo básico de <b data-who="yo"></b> por quincena</span><div class="moneybox"><b>$</b><input type="text" id="cfg-sueldo" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
     <label class="field" data-cfg-par><span>Sueldo básico de <b data-who="esp"></b> por quincena</span><div class="moneybox"><b>$</b><input type="text" id="cfg-sueldo-esp" inputmode="numeric" autocomplete="off" placeholder="0" data-money></div></label>
-    <fieldset><legend>Meta de ahorro por quincena</legend>
+    <fieldset hidden><legend>Meta de ahorro por quincena</legend>
       <div class="seg two-opt">
         <label class="chip"><input type="radio" name="cfg-tipo" id="cfg-pct" value="pct" checked><span>% de los ingresos</span></label>
         <label class="chip"><input type="radio" name="cfg-tipo" id="cfg-fijo" value="monto"><span>Monto fijo</span></label>
       </div>
     </fieldset>
-    <label class="field"><span id="cfg-valor-l">Porcentaje a ahorrar</span><div class="moneybox"><b id="cfg-pre">%</b><input type="text" id="cfg-valor" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
-    <p class="hint">La meta se aparta de los ingresos antes de calcular lo que queda para gastar.</p>
+    <label class="field" hidden><span id="cfg-valor-l">Porcentaje a ahorrar</span><div class="moneybox"><b id="cfg-pre">%</b><input type="text" id="cfg-valor" inputmode="numeric" autocomplete="off" placeholder="0"></div></label>
+    <p class="hint">Lo que sobre al final de cada quincena queda como ahorro.</p>
     <div class="actions">
       <button class="btn primary" type="submit" id="cfg-save">Guardar ajustes</button>
       <button class="btn" type="button" id="cfg-cancel">Cancelar</button>
@@ -720,12 +720,8 @@ function vals(o){
   Object.keys(o).forEach(function(id){var x=o[id];if(x&&typeof x.m==='number'&&typeof x.d==='string')out.push(Object.assign({id:id},x))});
   return out;
 }
-function metaOf(cfg,ing){
-  if(!cfg||ing<=0)return 0;
-  var v=Number(cfg.metaValor)||0;
-  var m=cfg.metaTipo==='monto'?v:Math.round(ing*Math.min(v,100)/100);
-  return Math.max(0,Math.min(m,ing));
-}
+/* El ahorro no se aparta: es lo que sobra al cerrar la quincena */
+function metaOf(cfg,ing){return 0}
 function monthIdx(r){return r.y*12+r.m}
 function oblsOf(cfg){
   var out=[],o=cfg&&cfg.obls;if(!o)return out;
@@ -1156,7 +1152,7 @@ function renderTop(sm){
   $('#q-today').hidden=S.cur===qidOf(TODAY);
 }
 function renderHero(sm){
-  var st={ok:['ok','ok',PL('Vas bien','Van bien')],ritmo:['warn','warn',PL('Vas gastando rápido','Van gastando rápido')],crit:['crit','crit','Sale más de lo que entra']}[sm.status];
+  var st=sm.status==='crit'?['crit','crit','Sale más de lo que entra']:null;
   var duo=esc(nm('yo'))+' y '+esc(nm('esp')),yo=esc(nm('yo')),past=sm.phase==='past';
   var label=!named()?(past?'Lo que quedó':'Lo que queda esta quincena'):(isSolo()?(past?'A '+yo+' le quedó':'A '+yo+' le queda'):(past?'A '+duo+' les quedó':'A '+duo+' les queda'));
   var sub;
@@ -1166,15 +1162,8 @@ function renderHero(sm){
   var side='';
   if(S.ready&&sm.ing===0){
     side='<div class="k">Primer paso</div><div class="d">Pon el sueldo básico de '+PL('tu quincena','cada uno')+' para ver cuánto '+PL('puedes','pueden')+' gastar.</div><button class="btn small" type="button" data-act="wiz">Poner sueldos</button>';
-  }else if(sm.phase==='current'){
-    side=sm.leftToday>=0
-      ?'<div class="k">'+PL('Hoy puedes gastar','Hoy pueden gastar')+'</div><div class="v">'+money(sm.leftToday)+'</div>'
-      :'<div class="k">'+PL('Hoy te pasaste por','Hoy se pasaron por')+'</div><div class="v">'+money(-sm.leftToday)+'</div>';
-    side+='<div class="d">Tope de hoy '+money(sm.dailyBudget)+' en extras · '+(sm.daysLeft===1?'último día':'quedan '+sm.daysLeft+' días')+'</div>';
   }else if(sm.phase==='past'){
-    side='<div class="k">'+(sm.saved>=0?'Sobró':'Faltó')+'</div><div class="v">'+money(Math.abs(sm.saved))+'</div><div class="d">'+(sm.meta>0?'Meta de ahorro '+money(sm.meta)+' · '+(sm.saved>=sm.meta?'se cumplió':'no alcanzó'):'Lo que sobra es ahorro')+'</div>';
-  }else{
-    side='<div class="k">Quincena futura</div><div class="d">Empieza el '+dayLabel(sm.r.start)+'. Ya puedes ver las obligaciones que vienen.</div>';
+    side='<div class="k">'+(sm.saved>=0?PL('Ahorraste','Ahorraron'):'Faltó')+'</div><div class="v">'+money(Math.abs(sm.saved))+'</div><div class="d">Lo que sobra al cerrar la quincena</div>';
   }
   var pagSeg=Math.min(sm.fijosPag,sm.ing),pendSeg=Math.max(0,Math.min(sm.fijosTot-sm.fijosPag,sm.ing-pagSeg));
   var gSeg=Math.max(0,Math.min(sm.extras,sm.ing-pagSeg-pendSeg)),lSeg=Math.max(0,sm.libre);
@@ -1182,13 +1171,13 @@ function renderHero(sm){
   var split=sm.ing>0?seg('f',pagSeg)+seg('f',pendSeg,';opacity:.45')+seg('g',gSeg)+seg('l',lSeg):'';
   $('#hero').innerHTML=
     '<div class="hero-top"><div><div class="hero-label">'+label+'</div><div class="hero-big">'+money(sm.libre)+'</div><div class="hero-sub">'+sub+'</div>'+
-    (st?'<div class="pill '+st[0]+'">'+ic(st[1])+st[2]+'</div>':'')+'</div><div class="today">'+side+'</div></div>'+
+    (st?'<div class="pill '+st[0]+'">'+ic(st[1])+st[2]+'</div>':'')+'</div>'+(side?'<div class="today">'+side+'</div>':'')+'</div>'+
  '<div class="hero-card">'+pplHtml(sm)+'<div class="split" role="img" aria-label="Reparto de los ingresos: obligaciones pagadas '+money(sm.fijosPag)+', por pagar '+money(sm.fijosTot-sm.fijosPag)+', gastos extra '+money(sm.extras)+', queda '+money(sm.libre)+'">'+split+'</div>'+
     '<div class="legend">'+
     '<div><div class="k"><i style="background:var(--seg-fijo)"></i>Obligaciones pagadas</div><div class="v">'+money(sm.fijosPag)+'</div></div>'+
     '<div><div class="k"><i style="background:var(--seg-fijo);opacity:.45"></i>Por pagar</div><div class="v">'+money(sm.fijosTot-sm.fijosPag)+'</div></div>'+
     '<div><div class="k"><i style="background:var(--seg-gasto)"></i>Gastos extra</div><div class="v">'+money(sm.extras)+'</div></div>'+
-    '<div><div class="k"><i style="background:var(--seg-libre)"></i>Queda</div><div class="v">'+money(sm.libre)+'</div></div>'+
+    '<div><div class="k"><i style="background:var(--seg-libre)"></i>'+(past?'Ahorro':'Queda')+'</div><div class="v">'+money(sm.libre)+'</div></div>'+
     '</div></div>';
 }
 function pplHtml(sm){
@@ -1422,13 +1411,10 @@ document.addEventListener('keydown',function(e){
 function renderAhorro(sm){
   var closed=0,nClosed=0;
   Object.keys(S.qs).forEach(function(id){var r=qRange(id);if(r.end<TODAY){var s=summarize(S.qs[id],S.cfg,id,TODAY,S.qs);if(s.ing||s.gas){closed+=s.saved;nClosed++}}});
-  var cfg=S.cfg||{},metaTxt=cfg.metaTipo==='monto'?'Monto fijo por quincena':((Number(cfg.metaValor)||0)+' % de lo que entra');
-  var proj=sm.phase==='past'?sm.saved:sm.saved-sm.pend,pos=Math.max(0,proj),pct=sm.meta>0?Math.min(100,pos/sm.meta*100):0;
-  var d2=proj<0?'No alcanza: faltan '+money(-proj)+' para cubrir todo':(sm.meta>0?(proj>=sm.meta?'Alcanza para la meta, con '+money(proj-sm.meta)+' de más':'No alcanza para la meta: faltan '+money(sm.meta-proj)):'Lo que quede al final es ahorro');
+  var proj=sm.phase==='past'?sm.saved:sm.saved-sm.pend;
   $('#ahorro-stats').innerHTML=
-    '<div class="stat"><div class="k">Meta de ahorro (opcional)</div><div class="v">'+(sm.meta>0?money(sm.meta):'Sin meta')+'</div><div class="d">'+(sm.meta>0?metaTxt+' · si no alcanza, no pasa nada':'Pueden ponerla cuando quieran')+'</div><div style="margin-top:10px"><button class="btn small" type="button" data-act="settings">'+(sm.meta>0?'Cambiar meta':'Poner meta')+'</button></div></div>'+
-    '<div class="stat"><div class="k">'+(sm.phase==='past'?(proj>=0?PL('Te sobró en esta quincena','Les sobró en esta quincena'):PL('Te faltó en esta quincena','Les faltó en esta quincena')):PL('Si no gastas más, te queda','Si no gastan más, les queda'))+'</div><div class="v">'+(proj<0?'−':'')+money(Math.abs(proj))+'</div>'+(sm.meta>0?'<div class="track" role="img" aria-label="'+Math.round(pct)+' % de la meta"><span style="width:'+pct.toFixed(1)+'%"></span></div>':'')+'<div class="d" style="margin-top:6px">'+(sm.ing>0?d2:'Registra ingresos para calcularlo')+(sm.phase!=='past'&&sm.pend>0?' · ya descontando lo que falta por pagar':'')+'</div></div>'+
-    '<div class="stat"><div class="k">Sobrante acumulado</div><div class="v">'+money(closed)+'</div><div class="d">'+(nClosed?'Suma de '+nClosed+(nClosed===1?' quincena cerrada':' quincenas cerradas'):'Se suma al cerrar cada quincena')+'</div></div>';
+    '<div class="stat"><div class="k">'+(sm.phase==='past'?(proj>=0?PL('Ahorraste en esta quincena','Ahorraron en esta quincena'):'Faltó en esta quincena'):PL('Si no gastas más, ahorras','Si no gastan más, ahorran'))+'</div><div class="v">'+(proj<0?'−':'')+money(Math.abs(proj))+'</div><div class="d" style="margin-top:6px">'+(sm.ing>0?(proj<0?'No alcanza: faltan '+money(-proj)+' para cubrir todo':'Lo que quede al cerrar la quincena es el ahorro')+(sm.phase!=='past'&&sm.pend>0?' · ya descontando lo que falta por pagar':''):'Registra ingresos para calcularlo')+'</div></div>'+
+    '<div class="stat"><div class="k">Ahorro acumulado</div><div class="v">'+money(closed)+'</div><div class="d">'+(nClosed?'Suma de '+nClosed+(nClosed===1?' quincena cerrada':' quincenas cerradas'):'Se suma al cerrar cada quincena')+'</div></div>';
 
   var a=sm.who.yo.gas,b=sm.who.esp.gas,t=a+b,half=t/2,diff=Math.round(a-half),A=esc(nm('yo')),B=esc(nm('esp'));
   if(t<=0)$('#mitades').innerHTML='<div class="empty"><strong>Aún no hay pagos en esta quincena</strong>Cuando marques quién pagó cada cosa, aquí verás si van a mitades.</div>';
@@ -1444,14 +1430,13 @@ function renderAhorro(sm){
   var ids=Object.keys(S.qs).filter(function(id){var q=S.qs[id];return vals(q.ing).length||vals(q.gas).length});
   if(ids.indexOf(S.cur)<0)ids.push(S.cur);
   ids.sort().reverse();
-  $('#hist').innerHTML='<div class="tablewrap"><table><thead><tr><th>Quincena</th><th>Ingresos</th><th>Gastos</th><th>Ahorro</th><th>Meta</th></tr></thead><tbody>'+
+  $('#hist').innerHTML='<div class="tablewrap"><table><thead><tr><th>Quincena</th><th>Ingresos</th><th>Gastos</th><th>Ahorro</th><th>Resultado</th></tr></thead><tbody>'+
     ids.map(function(id){
       var s=summarize(S.qs[id],S.cfg,id,TODAY,S.qs),tag;
       if(s.phase!=='past')tag='<span class="tag run">'+ic('clock')+(s.phase==='current'?'En curso':'Futura')+'</span>';
       else if(s.ing===0&&s.gas===0)tag='<span class="tag run">'+ic('clock')+'Sin datos</span>';
       else if(s.saved<0)tag='<span class="tag no">'+ic('crit')+'Faltaron '+money(-s.saved)+'</span>';
-      else if(s.meta>0&&s.saved<s.meta)tag='<span class="tag run">'+ic('clock')+'Sobraron '+money(s.saved)+'</span>';
-      else tag='<span class="tag ok">'+ic('ok')+(s.meta>0?'Meta cumplida':'Sobraron '+money(s.saved))+'</span>';
+      else tag='<span class="tag ok">'+ic('ok')+'Ahorro '+money(s.saved)+'</span>';
       return '<tr data-q="'+id+'" class="'+(id===S.cur?'cur':'')+'"><td><button class="qbtn" type="button" data-q="'+id+'">'+qLabel(id)+'</button></td><td>'+money(s.ing)+'</td><td>'+money(s.gas)+'</td><td><b>'+money(s.saved)+'</b></td><td>'+tag+'</td></tr>';
     }).join('')+'</tbody></table></div>';
 }
@@ -1595,7 +1580,7 @@ function openWizard(step){
     '<div class="wrows ppto"><div class="whead"><span>En qué</span><span>Por quincena</span><span class="w-w">¿De quién?</span></div>'+
     PPTO_P.map(function(x){var o=pp[x[0]]||{};return wzPptoRow(x[0],x[1],o)}).join('')+'</div></div>'+
   '<div class="wiz-pane" data-step="4" hidden><h3>Ahorro y resumen</h3><p>Así queda una quincena normal con lo que pusieron. Revisen que les quede plata libre.</p>'+
-    (c.metaTipo==='monto'?'<p class="hint">Meta de ahorro: '+money(c.metaValor)+' fijos por quincena. Se cambia en Ajustes.</p>':'<label class="field" style="max-width:260px"><span>Meta de ahorro, opcional (% de lo que entra)</span><div class="moneybox"><input type="text" id="wz-meta" inputmode="numeric" autocomplete="off" maxlength="2" placeholder="0" value="'+(c.metaValor!=null&&c.metaValor!==10?c.metaValor:(c.listo?c.metaValor:''))+'"><b>%</b></div></label>')+
+    '<p class="hint">No hay que apartar ahorro: lo que sobre al final de cada quincena queda como ahorro.</p>'+
     '<div class="wsum" id="wz-sum"></div></div>';
   $('#wiz-body').innerHTML=html;
   S.wzOpen=true;S.wzStep=step&&step>1&&c.listo?step:1;S.wzCustom=custom.length;
@@ -1635,8 +1620,7 @@ function wzSummary(){
   var fq={1:0,2:0},pp=0;
   wzRows('#wiz [data-step="2"]').forEach(function(r){if(!r.m||(solo&&r.par))return;if(r.q===1||r.q===2)fq[r.q]+=r.m;else{fq[1]+=r.m;fq[2]+=r.m}});
   wzRows('#wiz [data-step="3"]').forEach(function(r){pp+=r.m});
-  var c=S.cfg||{},metaIn=$('#wz-meta'),pct=metaIn&&metaIn.value!==''?Math.min(99,digits(metaIn.value)):(metaIn?0:null);
-  var meta=pct!=null?Math.round(ing*pct/100):Math.min(Number(c.metaValor)||0,ing);
+  var meta=0;
   var col=function(q){var libre=ing-fq[q]-pp;return {f:fq[q],l:libre}};
   var a=col(1),b=col(2);
   var row=function(t,x,y,cls){return '<tr'+(cls?' class="'+cls+'"':'')+'><td>'+t+'</td><td>'+x+'</td><td>'+y+'</td></tr>'};
@@ -1644,7 +1628,7 @@ function wzSummary(){
     row('Entra (sueldos básicos)',money(ing),money(ing))+
     row('Gastos fijos','−'+money(a.f),'−'+money(b.f))+
     row('Presupuestos','−'+money(pp),'−'+money(pp))+
-    row('Queda al final',money(a.l),money(b.l),'tot')+
+    row('Queda al final (ahorro)',money(a.l),money(b.l),'tot')+
     (meta>0?row('Meta de ahorro (opcional): '+money(meta),a.l>=meta?'✓ alcanza':'no alcanza',b.l>=meta?'✓ alcanza':'no alcanza'):'')+'</tbody></table>'+
     (!solo&&!digits($('#wz-s-ot').value)?'<p class="hint" style="margin-top:10px">Todavía falta lo que gana '+esc(wzName(otro(soyW())))+'. Cuando lo llene, el resumen se completa.</p>':'')+
     (a.l<0||b.l<0?'<p class="msg warn" style="margin-top:10px">En alguna quincena sale más de lo que entra. Bajen algún presupuesto o pasen algún pago fijo a la otra quincena.</p>':(ing===0?'<p class="hint" style="margin-top:10px">Sin ingresos todavía: complétenlos en el paso 1 para ver el resumen.</p>':'<p class="hint" style="margin-top:10px">Las comisiones y extras se suman cuando lleguen: la app las pregunta cada día de pago.</p>'));
