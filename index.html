@@ -123,7 +123,7 @@ button,input,select{font:inherit;color:inherit}
 .split{display:flex;gap:2px;height:16px;border-radius:8px;overflow:hidden;background:var(--surface-2)}
 .split span{min-width:0;border-radius:4px}
 .split .f{background:var(--seg-fijo)} .split .g{background:var(--seg-gasto)} .split .a{background:var(--seg-ahorro)} .split .l{background:var(--seg-libre)}
-.legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 14px;margin-top:12px}
+.legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px;margin-top:12px}
 .legend div{min-width:0}
 .legend .k{display:flex;align-items:center;gap:6px;color:var(--ink-2);font-size:13px;font-weight:700}
 .legend .k i{width:10px;height:10px;border-radius:50%;flex:none}
@@ -268,6 +268,7 @@ td .qbtn{border:0;background:transparent;font-weight:800;cursor:pointer;padding:
 dialog{border:1px solid var(--line);border-radius:24px;background:var(--surface);color:var(--ink);padding:22px;width:min(460px,calc(100vw - 32px));box-shadow:var(--shadow)}
 dialog::backdrop{background:rgba(40,12,30,.55)}
 dialog form{display:grid;gap:14px}
+.ver{text-align:center;color:var(--muted);font-size:12px;font-weight:700;margin:6px 0 96px}
 .toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:999px;font-weight:800;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:calc(100vw - 32px);text-align:center;z-index:20}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
@@ -281,7 +282,8 @@ dialog form{display:grid;gap:14px}
   .stats{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:520px){
-  .legend{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .legend{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .legend .v{font-size:14.5px}
   .brand{flex:1 1 calc(100% - 56px)}
   .bt strong{font-size:19px}
   #btn-settings{padding:0;width:44px;min-height:44px;order:1}
@@ -644,6 +646,10 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
   <section class="panel" id="p-ahorro" role="tabpanel" aria-labelledby="t-ahorro" hidden>
     <div class="stats" id="ahorro-stats"></div>
     <div class="card" data-par-only>
+      <div class="card-h"><h2>Cuánto le queda a cada uno</h2><span class="aside">Esta quincena</span></div>
+      <div id="ppl-res"></div>
+    </div>
+    <div class="card" data-par-only>
       <div class="card-h"><h2>Cuentas a mitades</h2><span class="aside">Gastos de esta quincena</span></div>
       <div id="mitades"></div>
     </div>
@@ -686,6 +692,7 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
     </div>
   </form>
 </dialog>
+<p class="ver">Versión del 20 oct · inicio simple</p>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -1172,10 +1179,9 @@ function renderHero(sm){
   $('#hero').innerHTML=
     '<div class="hero-top"><div><div class="hero-label">'+label+'</div><div class="hero-big">'+money(sm.libre)+'</div><div class="hero-sub">'+sub+'</div>'+
     (st?'<div class="pill '+st[0]+'">'+ic(st[1])+st[2]+'</div>':'')+'</div>'+(side?'<div class="today">'+side+'</div>':'')+'</div>'+
- '<div class="hero-card">'+pplHtml(sm)+'<div class="split" role="img" aria-label="Reparto de los ingresos: obligaciones pagadas '+money(sm.fijosPag)+', por pagar '+money(sm.fijosTot-sm.fijosPag)+', gastos extra '+money(sm.extras)+', queda '+money(sm.libre)+'">'+split+'</div>'+
+ '<div class="hero-card"><div class="split" role="img" aria-label="Reparto de los ingresos">'+split+'</div>'+
     '<div class="legend">'+
-    '<div><div class="k"><i style="background:var(--seg-fijo)"></i>Obligaciones pagadas</div><div class="v">'+money(sm.fijosPag)+'</div></div>'+
-    '<div><div class="k"><i style="background:var(--seg-fijo);opacity:.45"></i>Por pagar</div><div class="v">'+money(sm.fijosTot-sm.fijosPag)+'</div></div>'+
+    '<div><div class="k"><i style="background:var(--seg-fijo)"></i>Obligaciones</div><div class="v">'+money(sm.fijosTot)+'</div></div>'+
     '<div><div class="k"><i style="background:var(--seg-gasto)"></i>Gastos extra</div><div class="v">'+money(sm.extras)+'</div></div>'+
     '<div><div class="k"><i style="background:var(--seg-libre)"></i>'+(past?'Ahorro':'Queda')+'</div><div class="v">'+money(sm.libre)+'</div></div>'+
     '</div></div>';
@@ -1409,6 +1415,7 @@ document.addEventListener('keydown',function(e){
   if(e.target&&e.target.id==='ci-m'&&e.key==='Enter'){e.preventDefault();var b=e.target.closest('.ia').querySelector('[data-act="ci-save"]');if(b)b.click()}
 });
 function renderAhorro(sm){
+  $('#ppl-res').innerHTML=pplHtml(sm);
   var closed=0,nClosed=0;
   Object.keys(S.qs).forEach(function(id){var r=qRange(id);if(r.end<TODAY){var s=summarize(S.qs[id],S.cfg,id,TODAY,S.qs);if(s.ing||s.gas){closed+=s.saved;nClosed++}}});
   var proj=sm.phase==='past'?sm.saved:sm.saved-sm.pend;
