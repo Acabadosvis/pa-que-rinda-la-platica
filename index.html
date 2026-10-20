@@ -646,10 +646,6 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
   <section class="panel" id="p-ahorro" role="tabpanel" aria-labelledby="t-ahorro" hidden>
     <div class="stats" id="ahorro-stats"></div>
     <div class="card" data-par-only>
-      <div class="card-h"><h2>Cuánto le queda a cada uno</h2><span class="aside">Esta quincena</span></div>
-      <div id="ppl-res"></div>
-    </div>
-    <div class="card" data-par-only>
       <div class="card-h"><h2>Cuentas a mitades</h2><span class="aside">Gastos de esta quincena</span></div>
       <div id="mitades"></div>
     </div>
@@ -692,7 +688,7 @@ input[type="email"],input[type="password"]{border:1.5px solid var(--line);backgr
     </div>
   </form>
 </dialog>
-<p class="ver">Versión del 20 oct · inicio simple</p>
+<p class="ver">Versión del 20 oct · total de los dos</p>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -1165,34 +1161,32 @@ function renderHero(sm){
   var sub;
   if(!S.ready)sub='Cargando tus datos…';
   else if(sm.ing===0)sub=(sm.fijosTot>0?'Esta quincena hay '+money(sm.fijosTot)+' en obligaciones. ':'')+'Pon el sueldo para ver cuánto '+PL('puedes','pueden')+' gastar.';
-  else sub='Entran '+money(sm.ing)+(sm.porLlegar>0?' (falta que lleguen '+money(sm.porLlegar)+')':'')+' − obligaciones '+money(sm.fijosTot)+' − gastos extra '+money(sm.extras)+'.';
+  else sub='Entran '+money(sm.ing)+(sm.porLlegar>0?' (falta que lleguen '+money(sm.porLlegar)+')':'')+' · ya se pagó '+money(sm.gas)+(sm.pend>0&&!past?'. Faltan por pagar '+money(sm.pend)+': cuando se paguen, al final quedarían '+money(sm.libre)+'.':'.');
   var side='';
   if(S.ready&&sm.ing===0){
     side='<div class="k">Primer paso</div><div class="d">Pon el sueldo básico de '+PL('tu quincena','cada uno')+' para ver cuánto '+PL('puedes','pueden')+' gastar.</div><button class="btn small" type="button" data-act="wiz">Poner sueldos</button>';
   }else if(sm.phase==='past'){
     side='<div class="k">'+(sm.saved>=0?PL('Ahorraste','Ahorraron'):'Faltó')+'</div><div class="v">'+money(Math.abs(sm.saved))+'</div><div class="d">Lo que sobra al cerrar la quincena</div>';
   }
-  var pagSeg=Math.min(sm.fijosPag,sm.ing),pendSeg=Math.max(0,Math.min(sm.fijosTot-sm.fijosPag,sm.ing-pagSeg));
-  var gSeg=Math.max(0,Math.min(sm.extras,sm.ing-pagSeg-pendSeg)),lSeg=Math.max(0,sm.libre);
+  var pagSeg=Math.min(sm.gas,sm.ing),pendSeg=Math.max(0,Math.min(past?0:sm.pend,sm.ing-pagSeg)),lSeg=Math.max(0,sm.ing-pagSeg-pendSeg);
   function seg(c,v,x){return v>0?'<span class="'+c+'" style="flex:'+v+' 0 0'+(x||'')+'"></span>':''}
-  var split=sm.ing>0?seg('f',pagSeg)+seg('f',pendSeg,';opacity:.45')+seg('g',gSeg)+seg('l',lSeg):'';
+  var split=sm.ing>0?seg('f',pagSeg)+seg('f',pendSeg,';opacity:.45')+seg('l',lSeg):'';
   $('#hero').innerHTML=
-    '<div class="hero-top"><div><div class="hero-label">'+label+'</div><div class="hero-big">'+money(sm.libre)+'</div><div class="hero-sub">'+sub+'</div>'+
+    '<div class="hero-top"><div><div class="hero-label">'+label+'</div><div class="hero-big">'+money(sm.ing-sm.gas)+'</div><div class="hero-sub">'+sub+'</div>'+
     (st?'<div class="pill '+st[0]+'">'+ic(st[1])+st[2]+'</div>':'')+'</div>'+(side?'<div class="today">'+side+'</div>':'')+'</div>'+
- '<div class="hero-card"><div class="split" role="img" aria-label="Reparto de los ingresos">'+split+'</div>'+
+ '<div class="hero-card">'+pplHtml(sm)+'<div class="split" role="img" aria-label="Reparto de los ingresos">'+split+'</div>'+
     '<div class="legend">'+
-    '<div><div class="k"><i style="background:var(--seg-fijo)"></i>Obligaciones</div><div class="v">'+money(sm.fijosTot)+'</div></div>'+
-    '<div><div class="k"><i style="background:var(--seg-gasto)"></i>Gastos extra</div><div class="v">'+money(sm.extras)+'</div></div>'+
-    '<div><div class="k"><i style="background:var(--seg-libre)"></i>'+(past?'Ahorro':'Queda')+'</div><div class="v">'+money(sm.libre)+'</div></div>'+
+    '<div><div class="k"><i style="background:var(--seg-fijo)"></i>Ya pagado</div><div class="v">'+money(sm.gas)+'</div></div>'+
+    '<div><div class="k"><i style="background:var(--seg-fijo);opacity:.45"></i>Por pagar</div><div class="v">'+money(past?0:sm.pend)+'</div></div>'+
+    '<div><div class="k"><i style="background:var(--seg-libre)"></i>'+(past?'Ahorro':'Al final quedaría')+'</div><div class="v">'+money(past?sm.saved:sm.libre)+'</div></div>'+
     '</div></div>';
 }
 function pplHtml(sm){
   var ws=isSolo()?['yo']:['yo','esp'];
   var row=function(n,a,b,cls){return '<div class="ppl-r'+(cls?' '+cls:'')+'"><span class="ppl-n">'+n+'</span><span class="c-in">'+money(a)+'</span><span class="neg c-out">−'+money(b)+'</span><b class="c-left">'+money(a-b)+'</b></div>'};
-  var out=function(w){return sm.who[w].gas+(sm.who[w].pend||0)};
-  return '<div class="ppl"><div class="ppl-h"><span></span><span>Entra</span><span>Sale</span><span>Le queda</span></div>'+
-    ws.map(function(w){return row(isSolo()?'Tú':whoTag(w),sm.who[w].ing,out(w))}).join('')+
-    (isSolo()?'':row('Total',sm.ing,out('yo')+out('esp'),'tot'))+'</div><p class="hint" style="margin:8px 0 0">Sale = lo pagado + lo que falta por pagar (los pagos de los dos van a mitades).</p>';
+  return '<div class="ppl"><div class="ppl-h"><span></span><span>Entra</span><span>Ha pagado</span><span>Le queda</span></div>'+
+    ws.map(function(w){return row(isSolo()?'Tú':whoTag(w),sm.who[w].ing,sm.who[w].gas)}).join('')+
+    (isSolo()?'':row('Total',sm.ing,sm.gas,'tot'))+'</div>';
 }
 function opsHtml(kind,id){
   if(S.confirm===kind+':'+id)return '<div class="confirm"><span>¿Borrar?</span><button class="btn small" type="button" data-act="del-yes" data-kind="'+kind+'" data-id="'+id+'">Sí</button><button class="btn small" type="button" data-act="del-no">No</button></div>';
@@ -1415,7 +1409,6 @@ document.addEventListener('keydown',function(e){
   if(e.target&&e.target.id==='ci-m'&&e.key==='Enter'){e.preventDefault();var b=e.target.closest('.ia').querySelector('[data-act="ci-save"]');if(b)b.click()}
 });
 function renderAhorro(sm){
-  $('#ppl-res').innerHTML=pplHtml(sm);
   var closed=0,nClosed=0;
   Object.keys(S.qs).forEach(function(id){var r=qRange(id);if(r.end<TODAY){var s=summarize(S.qs[id],S.cfg,id,TODAY,S.qs);if(s.ing||s.gas){closed+=s.saved;nClosed++}}});
   var proj=sm.phase==='past'?sm.saved:sm.saved-sm.pend;
