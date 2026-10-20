@@ -377,6 +377,8 @@ dialog form{display:grid;gap:14px}
 .tg{display:inline-block;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:800;margin-left:4px;vertical-align:1px}
 .tg.ok{background:color-mix(in srgb,var(--income) 16%,transparent);color:var(--income)}
 .tg.wait{background:color-mix(in srgb,var(--saving) 16%,transparent);color:var(--saving)}
+.mov.late{background:color-mix(in srgb,var(--expense) 7%,transparent);border-radius:14px;padding-left:8px;padding-right:8px}
+.mora{color:var(--expense);font-weight:800}
 .tg.no{background:var(--surface-2);color:var(--muted)}
 .ip-cfg{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px;font-size:13.5px;font-weight:700;color:var(--ink-2)}
 .ip-cfg select{width:auto;min-height:38px;padding:5px 10px;font-size:14px}
@@ -737,7 +739,7 @@ function obState(ob,r){
   if(Number(ob.cada)===2&&(monthIdx(r)-(Number(ob.ref)||0))%2!==0)return 'off';
   return 'on';
 }
-function summarize(q,cfg,qid,today){
+function summarize(q,cfg,qid,today,all){
   var r=qRange(qid),ings=vals(q&&q.ing),gass=vals(q&&q.gas),ing=0,gas=0,extras=0,fijosPag=0,nExtras=0,i;
   var perDay=[],cntDay=[],byCat={},byTipo={},paid={},who={yo:{ing:0,gas:0},esp:{ing:0,gas:0}};
   for(i=0;i<r.days;i++){perDay.push(0);cntDay.push(0)}
@@ -768,6 +770,33 @@ function summarize(q,cfg,qid,today){
     else if(st==='on'){obls.push(Object.assign({},ob,{st:'pend'}));if(phase!=='past')pend+=ob.m}
     else if(st==='off')obls.push(Object.assign({},ob,{st:'off'}));
   });
+  /* Mora: lo que tocaba pagar en una quincena ya cerrada y no se pagó pasa a esta */
+  var mora=0;
+  if(cfg&&cfg.listo&&cfg.desde&&cfg.desde<qid){
+    var pq=cfg.desde,guard=0,moraRows=[];
+    while(pq<qid&&guard++<36){
+      var rp=qRange(pq);
+      if(rp.end<today){
+        var gp=pq===qid?gass:vals(all&&all[pq]&&all[pq].gas);
+        oblsOf(cfg).forEach(function(ob){
+          if(obState(ob,rp)!=='on')return;
+          if(gp.some(function(x){return x.ob===ob.id}))return;
+          var mid='m:'+pq+':'+ob.id,done=false,k=qShift(pq,1);
+          while(k<=qid&&!done){
+            var gk=k===qid?gass:vals(all&&all[k]&&all[k].gas);
+            if(gk.some(function(x){return x.ob===mid}))done=true;
+            k=qShift(k,1);
+          }
+          if(done&&!paid[mid])return;
+          seen[mid]=1;
+          if(paid[mid])moraRows.push(Object.assign({},ob,{id:mid,st:'paid',pay:paid[mid],mora:pq}));
+          else{moraRows.push(Object.assign({},ob,{id:mid,st:'pend',mora:pq}));if(phase!=='past'){pend+=ob.m;mora+=ob.m}}
+        });
+      }
+      pq=qShift(pq,1);
+    }
+    obls=moraRows.concat(obls);
+  }
   Object.keys(paid).forEach(function(id){if(!seen[id]){var x=paid[id];obls.push({id:id,n:x.n||'Obligación',m:x.m,c:x.c,st:'paid',pay:x,orphan:true})}});
   var meta=metaOf(cfg,ing),fijosTot=fijosPag+pend,libre=ing-meta-fijosTot-extras;
   var dayIdx=0,daysLeft=0,spentToday=0,dailyBudget=0,leftToday=0;
@@ -786,7 +815,7 @@ function summarize(q,cfg,qid,today){
   }
   return {r:r,ings:ings,gass:gass,ing:ing,gas:gas,extras:extras,nExtras:nExtras,fijosPag:fijosPag,pend:pend,fijosTot:fijosTot,obls:obls,
     meta:meta,libre:libre,phase:phase,dayIdx:dayIdx,daysLeft:daysLeft,spentToday:spentToday,dailyBudget:dailyBudget,leftToday:leftToday,
-    tope:tope,status:status,perDay:perDay,cntDay:cntDay,byCat:byCat,byTipo:byTipo,who:who,saved:ing-gas,prev:prev,porLlegar:prev.reduce(function(t,p){return t+p.m},0)};
+    moraTot:mora,tope:tope,status:status,perDay:perDay,cntDay:cntDay,byCat:byCat,byTipo:byTipo,who:who,saved:ing-gas,prev:prev,porLlegar:prev.reduce(function(t,p){return t+p.m},0)};
 }
 /*LOGIC-END*/
 if(typeof module!=='undefined'&&module.exports){module.exports={qidOf:qidOf,qRange:qRange,qShift:qShift,qLabel:qLabel,summarize:summarize,money:money,metaOf:metaOf,obState:obState,monthIdx:monthIdx};return}
@@ -1104,7 +1133,7 @@ function setTab(t,scroll){
   if(scroll)$('#p-'+t).scrollIntoView({block:'start'});
 }
 function goQ(qid){S.cur=qid;S.selDay=null;S.confirm=null;S.pay=null;cancelEdit('gas');S.ci=null;syncForms(true);render()}
-function curSm(){return summarize(S.qs[S.cur]||{},S.cfg,S.cur,TODAY)}
+function curSm(){return summarize(S.qs[S.cur]||{},S.cfg,S.cur,TODAY,S.qs)}
 
 /* ---------- Pintado ---------- */
 function render(){
@@ -1130,7 +1159,7 @@ function renderHero(sm){
   var sub;
   if(!S.ready)sub='Cargando tus datos…';
   else if(sm.ing===0)sub=(sm.fijosTot>0?'Esta quincena hay '+money(sm.fijosTot)+' en obligaciones. ':'')+'Registra los ingresos para ver cuánto '+PL('puedes','pueden')+' gastar.';
-  else sub='Entran '+money(sm.ing)+(sm.porLlegar>0?' (de eso falta que llegue '+money(sm.porLlegar)+')':'')+'. Ya se apartan '+money(sm.meta)+' de ahorro'+(sm.pend>0?' y '+money(sm.pend)+' de pagos fijos que faltan.':(sm.fijosPag>0?'. Pagos fijos al día.':'.'));
+  else sub='Entran '+money(sm.ing)+(sm.porLlegar>0?' (de eso falta que llegue '+money(sm.porLlegar)+')':'')+'. Ya se apartan '+money(sm.meta)+' de ahorro'+(sm.pend>0?' y '+money(sm.pend)+' de pagos fijos que faltan'+(sm.moraTot>0?' (incluye '+money(sm.moraTot)+' atrasados)':'')+'.':(sm.fijosPag>0?'. Pagos fijos al día.':'.'));
   var side='';
   if(S.ready&&sm.ing===0){
     side='<div class="k">Primer paso</div><div class="d">Pon el sueldo básico de '+PL('tu quincena','cada uno')+' para ver cuánto '+PL('puedes','pueden')+' gastar.</div><button class="btn small" type="button" data-act="wiz">Poner sueldos</button>';
@@ -1191,7 +1220,7 @@ function renderFijos(sm){
   var rows=sm.obls.map(function(ob){
     if(ob.st==='paid'){
       var p=ob.pay;
-      return '<li class="mov paid">'+tile('ok')+'<div class="t"><strong>'+esc(ob.n)+'</strong><small>'+(isSolo()?'Pagada':(p.w==='juntos'?'Pagaron los dos'+(p.sp?' · '+esc(nm('yo'))+' '+money(p.sp.yo)+' · '+esc(nm('esp'))+' '+money(p.sp.esp):' · mitad y mitad'):'Pagó '+whoTag(p.w)))+' · '+dayLabel(p.d)+'</small></div><span class="amt">'+money(p.m)+'</span><button class="btn small" type="button" data-act="unpay" data-id="'+esc(p.id)+'">Deshacer</button></li>';
+      return '<li class="mov paid">'+tile('ok')+'<div class="t"><strong>'+esc(ob.n)+(ob.mora?' · mora de '+esc(qLabel(ob.mora)):'')+'</strong><small>'+(isSolo()?'Pagada':(p.w==='juntos'?'Pagaron los dos'+(p.sp?' · '+esc(nm('yo'))+' '+money(p.sp.yo)+' · '+esc(nm('esp'))+' '+money(p.sp.esp):' · mitad y mitad'):'Pagó '+whoTag(p.w)))+' · '+dayLabel(p.d)+'</small></div><span class="amt">'+money(p.m)+'</span><button class="btn small" type="button" data-act="unpay" data-id="'+esc(p.id)+'">Deshacer</button></li>';
     }
     if(ob.st==='off')
       return '<li class="mov off">'+tile(ob.c)+'<div class="t"><strong>'+esc(ob.n)+'</strong><small>Cada 2 meses · este mes no toca</small></div><span class="amt">'+money(ob.m)+'</span><button class="btn small" type="button" data-act="ob-on" data-id="'+esc(ob.id)+'">Sí toca</button></li>';
@@ -1203,8 +1232,8 @@ function renderFijos(sm){
           (w==='juntos'?'<div class="grid2"><label class="field"><span>'+esc(nm('yo'))+' puso</span><div class="moneybox"><b>$</b><input type="text" id="pay-a" inputmode="numeric" autocomplete="off" data-money value="'+(pa?pa.toLocaleString('es-CO'):'')+'"></div></label><label class="field"><span>'+esc(nm('esp'))+' puso</span><div class="moneybox"><b>$</b><input type="text" id="pay-b" inputmode="numeric" autocomplete="off" data-money value="'+((m0-pa)>0?(m0-pa).toLocaleString('es-CO'):'')+'"></div></label></div>':''))+
         '<div class="actions"><button class="btn primary small" type="button" data-act="pay-ok">Marcar como pagada</button><button class="btn small" type="button" data-act="pay-no">Cancelar</button></div></div></li>';
     }
-    var meta=['Pendiente'].concat(obMeta(ob)).concat(!isSolo()&&ob.w==='juntos'?['entre los dos']:[]).join(' · ');
-    return '<li class="mov">'+tile(ob.c)+'<div class="t"><strong>'+esc(ob.n)+'</strong><small>'+meta+(Number(ob.cada)===2?' · <button class="link" type="button" data-act="ob-off" data-id="'+esc(ob.id)+'">este mes no toca</button>':'')+'</small></div><span class="amt">'+money(ob.m)+'</span><button class="btn small primary" type="button" data-act="pay" data-id="'+esc(ob.id)+'">Pagar</button></li>';
+    var meta=ob.mora?['<b class="mora">En mora</b>','de la quincena '+qLabel(ob.mora)]:[sm.phase==='past'?'Sin pagar · pasa a la siguiente quincena':'Pendiente'].concat(obMeta(ob)).concat(!isSolo()&&ob.w==='juntos'?['entre los dos']:[]).join(' · ');
+    return '<li class="mov'+(ob.mora?' late':'')+'">'+tile(ob.c)+'<div class="t"><strong>'+esc(ob.n)+'</strong><small>'+meta+(Number(ob.cada)===2&&!ob.mora?' · <button class="link" type="button" data-act="ob-off" data-id="'+esc(ob.id)+'">este mes no toca</button>':'')+'</small></div><span class="amt">'+money(ob.m)+'</span><button class="btn small primary" type="button" data-act="pay" data-id="'+esc(ob.id)+'">Pagar</button></li>';
   });
   rows.push('<li class="mov">'+tile('otros')+'<div class="t"><strong>Gastos extra</strong><small>'+(sm.nExtras?sm.nExtras+(sm.nExtras===1?' gasto anotado':' gastos anotados'):'Lo del día a día: mercado, salidas, imprevistos')+'</small></div><span class="amt">'+money(sm.extras)+'</span><button class="btn small" type="button" data-act="go-gas">Anotar</button></li>');
   var nOb=sm.obls.filter(function(o){return o.st!=='off'}).length,nPaid=sm.obls.filter(function(o){return o.st==='paid'}).length;
@@ -1389,7 +1418,7 @@ document.addEventListener('keydown',function(e){
 });
 function renderAhorro(sm){
   var closed=0,nClosed=0;
-  Object.keys(S.qs).forEach(function(id){var r=qRange(id);if(r.end<TODAY){var s=summarize(S.qs[id],S.cfg,id,TODAY);if(s.ing||s.gas){closed+=s.saved;nClosed++}}});
+  Object.keys(S.qs).forEach(function(id){var r=qRange(id);if(r.end<TODAY){var s=summarize(S.qs[id],S.cfg,id,TODAY,S.qs);if(s.ing||s.gas){closed+=s.saved;nClosed++}}});
   var cfg=S.cfg||{},metaTxt=cfg.metaTipo==='monto'?'Monto fijo por quincena':((Number(cfg.metaValor)||0)+' % de lo que entra');
   var proj=sm.phase==='past'?sm.saved:sm.saved-sm.pend,saved=Math.max(0,proj),pct=sm.meta>0?Math.min(100,saved/sm.meta*100):0;
   $('#ahorro-stats').innerHTML=
@@ -1413,7 +1442,7 @@ function renderAhorro(sm){
   ids.sort().reverse();
   $('#hist').innerHTML='<div class="tablewrap"><table><thead><tr><th>Quincena</th><th>Ingresos</th><th>Gastos</th><th>Ahorro</th><th>Meta</th></tr></thead><tbody>'+
     ids.map(function(id){
-      var s=summarize(S.qs[id],S.cfg,id,TODAY),tag;
+      var s=summarize(S.qs[id],S.cfg,id,TODAY,S.qs),tag;
       if(s.phase!=='past')tag='<span class="tag run">'+ic('clock')+(s.phase==='current'?'En curso':'Futura')+'</span>';
       else if(s.ing===0&&s.gas===0)tag='<span class="tag run">'+ic('clock')+'Sin datos</span>';
       else if(s.saved>=s.meta&&s.saved>=0)tag='<span class="tag ok">'+ic('ok')+'Cumplida</span>';
